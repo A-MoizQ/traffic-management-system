@@ -10,7 +10,7 @@ int main(){
     int choice = -1;
     do{
         int r = 0; int c = 0;
-        clear();
+        erase();
         mvprintw(r,c,"===== Simulation Dashboard =====");
         r++;
         mvprintw(r,c,"[0]. Exit");
@@ -55,6 +55,7 @@ int main(){
         }
 
         refresh();
+        napms(150);
 
     }while(choice != 0);
 
