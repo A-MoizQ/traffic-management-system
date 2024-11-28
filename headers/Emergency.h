@@ -30,6 +30,8 @@ public:
     void deletEmergencyQueue();
     void display();
     ~EmergencyQueue();
+    void display();
+    void removeFromEmergencyQueue();
     
 
 

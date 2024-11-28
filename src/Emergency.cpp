@@ -51,3 +51,23 @@
     EmergencyQueue:: ~EmergencyQueue(){
         deletEmergencyQueue();
     }
+
+    void EmergencyQueue:: display(){
+        // display function is not done as it requires some desigining
+        cout << "Display" << endl;
+    }
+
+    void EmergencyQueue:: removeFromEmergencyQueue(){
+        if (EmergencyQueueList == nullptr)
+        {
+            cout << "Set this with ncurses ka no car is present in it " << endl;
+            return;
+        }
+        else{
+            EmergencyNode* backup = EmergencyQueueList;
+            EmergencyQueueList = EmergencyQueueList->next;
+            cout << "Display the information of the dequeued car" << endl;
+            delete backup;
+        }
+    }
+
