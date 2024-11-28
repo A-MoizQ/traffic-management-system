@@ -27,14 +27,15 @@ class HashTable {
 
     } ;
 
-    HashNode **table ; // Dynamic array of pointers to linked lists
+    //using chaining to overcome collisons of indexes
+    HashNode **table ; // Dynamic array of pointers to linked lists i.e each index will be a linked list
     int arraySize ;
 
     int hash ( const &IntersectionPair pair) const;
 
     public:
 
-    HashTable (int size = 100) ;
+    HashTable (int size = 101) ; // using a prime number to get less collisions
 
     ~HashTable () ;
 

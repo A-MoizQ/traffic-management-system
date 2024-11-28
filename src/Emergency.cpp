@@ -1,4 +1,7 @@
 #include "../headers/Emergency.h"
+
+using namespace std;
+
     EmergencyQueue:: EmergencyQueue():EmergencyQueueList(nullptr){}
 
     
