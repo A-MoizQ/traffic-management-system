@@ -1,5 +1,5 @@
-#ifndef Emergency_H
-#define Emergency_H
+#ifndef EMERGENCY_H
+#define EMERGENCY_H
 #include<string>
 #include <iostream>
 #include<fstream>
