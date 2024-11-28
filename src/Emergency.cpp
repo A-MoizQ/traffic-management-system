@@ -71,3 +71,34 @@
         }
     }
 
+    void EmergencyQueue::loadFromEmergencyCsv(string fileName){
+        fstream fileHandler(fileName, ios::in);
+        if(!fileHandler){
+            erase();
+            mvprintw(0,0,"File not found!");
+            refresh();
+            return;
+        }
+        string data;
+        getline(fileHandler,data); //to skip the headers
+        while(!fileHandler.eof()){
+
+            // to check if the vehicle id is present in the file
+            if(data.empty()) continue;
+            string vId = data;
+            
+            // to check if the vehicle start point is present in the file
+            if(data.empty()) continue;
+            char startPoint = data[0];
+
+            // to check if the vehicle end point is present in the file
+            if(data.empty()) continue;
+            char endPoint = data[0];
+            
+            // to check if the vehicle priority level is present in the file
+            if(data.empty()) continue;
+            string priorityLevel = data;
+            insertInEmergencyQueue(vId,startPoint,endPoint,priorityLevel);
+        }
+        fileHandler.close();
+    }

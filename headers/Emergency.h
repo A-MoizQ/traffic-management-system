@@ -2,6 +2,7 @@
 #define Emergency_H
 #include<string>
 #include <iostream>
+#include<fstream>
 using namespace std;
 class EmergencyQueue
 {
@@ -32,6 +33,7 @@ public:
     ~EmergencyQueue();
     void display();
     void removeFromEmergencyQueue();
+    void loadFromEmergencyCsv(std:: string );
     
 
 
