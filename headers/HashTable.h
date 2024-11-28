@@ -45,6 +45,12 @@ class HashTable {
 
     int getNumOfCars ( char intersection1 ,char intersection2 ) const ;
 
+    void displayRoadCongestion () const ;
+
+    IntersectionPair* getCongestedRoads ( int congestionThreshold ) const ; //get all the roads where the number of vehicles is greater than or equal to the congestionThreshold
+
+    void updateRoad ( char intersection1, char intersection2, int carsOnRoad ) ;
+
 };
 
 #endif
