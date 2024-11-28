@@ -3,31 +3,38 @@
 
 #include <iostream>
 
-using namespace std;
-
 struct IntersectionPair {
 
     char intersection1;
     char intersection2;
 
-    IntersectionPair(char inter1, char inter2) ;
+    IntersectionPair (char inter1, char inter2) ;
 
-}
+    bool operator==(const IntersectionPair& other) const ;
+
+} ;
+
 
 class HashTable {
 
     struct HashNode {
 
+        IntersectionPair key;
+        int carsOnRoad;
+        HashNode *next;
 
+        HashNode (const IntersectionPair& k, int v);
 
-    }
-    int arraySize;
+    } ;
 
-    int hash (const &IntersectionPair pair, int carsOnRoad) const;
+    HashNode **table ; // Dynamic array of pointers to linked lists
+    int arraySize ;
+
+    int hash ( const &IntersectionPair pair) const;
 
     public:
 
-    HashTable () ;
+    HashTable (int size = 100) ;
 
     ~HashTable () ;
 

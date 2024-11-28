@@ -3,7 +3,6 @@
 #include<string>
 #include <iostream>
 #include<fstream>
-using namespace std;
 class EmergencyQueue
 {
     struct EmergencyNode
@@ -16,18 +15,18 @@ class EmergencyQueue
         EmergencyNode* next;
         EmergencyNode(){}
         EmergencyNode(int pLevel): priorityLevel(pLevel){}
-        EmergencyNode(string vId, char startP, char vendPoint, int pLevel):next(nullptr){
+        EmergencyNode(std::string vId, char startP, char vendPoint, int pLevel):next(nullptr){
             vehicleId = vId;
             startP = startPoint;
             endPoint = vendPoint;
             priorityLevel = pLevel;
         }
     };
-    int calculatePriorityLevel(string Priority);
+    int calculatePriorityLevel(std::string Priority);
     EmergencyNode *EmergencyQueueList;
 public:
     EmergencyQueue();
-    void insertInEmergencyQueue(string vId, char startP, char vendPoint, string pLevel);
+    void insertInEmergencyQueue(std::string vId, char startP, char vendPoint, std::string pLevel);
     void deletEmergencyQueue();
     void display();
     ~EmergencyQueue();
