@@ -1,5 +1,8 @@
 #ifndef GRAPH_H
 #define GRAPH_H
+#include<string>
+#include<fstream>
+#include<ncurses.h>
 
 class Graph{
     struct Node{
@@ -12,8 +15,11 @@ class Graph{
     Node* list;
 public:
     Graph();
-    void setAdjacent(int weight,char vertex,char adjacent);
+    void loadFromFile(std::string fileName);
+    void display() const;
+    void setAdjacent(int weight,Node* vertex,char adjacent);
     void setVertex(char name);
+    Node* searchVertex(char name);
     void clearGraph();
     ~Graph();
 

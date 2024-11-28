@@ -1,4 +1,5 @@
 #include<ncurses.h>
+#include "../headers/Graph.h"
 using namespace std;
 
 int main(){
@@ -8,8 +9,13 @@ int main(){
     nodelay(stdscr, TRUE);  
     keypad(stdscr, TRUE); 
     int choice = -1;
+    //make graph object
+    Graph g;
+    //load content from file into graph
+    g.loadFromFile("./data/road_network.csv");
     do{
         int r = 0; int c = 0;
+        //clears screen
         erase();
         mvprintw(r,c,"===== Simulation Dashboard =====");
         r++;
@@ -32,7 +38,17 @@ int main(){
         choice = getch() - '0';
         if(choice != 0){
             if(choice == 1){
-
+                //clear screen
+                erase();
+                //display the graph
+                g.display();
+                //disable non blocking input
+                nodelay(stdscr, FALSE); 
+                //wait for user to press a key
+                getch();
+                //re enable non blocking input
+                nodelay(stdscr, TRUE); 
+                choice = -1; //reset choice to allow for non blocking input
             }
             else if(choice == 2){
 
