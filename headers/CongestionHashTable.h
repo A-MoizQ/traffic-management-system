@@ -1,5 +1,5 @@
-#ifndef HASH_TABLE_H
-#define HASH_TABLE_H
+#ifndef CONGESTION_HASH_TABLE_H
+#define CONGESTION_HASH_TABLE_H
 
 #include <iostream>
 
@@ -15,7 +15,7 @@ struct IntersectionPair {
 } ;
 
 
-class HashTable {
+class CongestionHashTable {
 
     struct HashNode {
 
@@ -37,9 +37,9 @@ class HashTable {
 
     public:
 
-    HashTable (int size = 101) ; // using a prime number to get less collisions
+    CongestionHashTable (int size = 101) ; // using a prime number to get less collisions
 
-    ~HashTable () ;
+    ~CongestionHashTable () ;
 
     void insert ( char intersection1, char intersection2 , int carsOnRoad ) ;
 

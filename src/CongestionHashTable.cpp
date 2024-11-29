@@ -1,4 +1,4 @@
-#include "../headers/HashTable.h"
+#include "../headers/CongestionHashTable.h"
 
 
 IntersectionPair::IntersectionPair ( char inter1, char inter2 ) :
@@ -16,7 +16,7 @@ bool IntersectionPair::operator== ( const IntersectionPair& other ) const {
 }
 
 
-HashTable::HashNode::HashNode ( const IntersectionPair& k, int v ):
+CongestionHashTable::HashNode::HashNode ( const IntersectionPair& k, int v ):
 
     key(k),
     carsOnRoad(v),
@@ -27,7 +27,7 @@ HashTable::HashNode::HashNode ( const IntersectionPair& k, int v ):
             carsOnRoad = 0;
     }
 
-void HashTable::HashNode::print () const {
+void CongestionHashTable::HashNode::print () const {
 
     cout<<"\nIntersection 1: "<<key.intersection1;
     cout<<"\nIntersection 2: "<<key.intersection2;
@@ -35,7 +35,7 @@ void HashTable::HashNode::print () const {
 
 };
 
-HashTable::HashTable(int size) :
+CongestionHashTable::CongestionHashTable(int size) :
 
     arraySize(size)
     
@@ -54,7 +54,7 @@ HashTable::HashTable(int size) :
 
 }
 
-HashTable::~HashTable() {
+CongestionHashTable::~CongestionHashTable() {
 
     for (int i = 0; i < arraySize; i++) {
 
@@ -76,14 +76,14 @@ HashTable::~HashTable() {
 }
 
 //hash function
-int HashTable::hash(const IntersectionPair& pair) const {
+int CongestionHashTable::hash(const IntersectionPair& pair) const {
 
     return ( pair.intersection1 + pair.intersection2 ) % arraySize ; //sum of ASCII values of the name of intersections kept between 0 and arraySize - 1
 
 }
 
 
-void HashTable::insert ( char intersection1, char intersection2, int carsOnRoad ) {
+void CongestionHashTable::insert ( char intersection1, char intersection2, int carsOnRoad ) {
 
     IntersectionPair key(intersection1, intersection2);
     int index = hash(key);
@@ -109,7 +109,7 @@ void HashTable::insert ( char intersection1, char intersection2, int carsOnRoad 
 }
 
 
-bool HashTable::remove ( char intersection1, char intersection2 ) {
+bool CongestionHashTable::remove ( char intersection1, char intersection2 ) {
 
     IntersectionPair key(intersection1, intersection2);
     int index = hash(key);
@@ -143,7 +143,7 @@ bool HashTable::remove ( char intersection1, char intersection2 ) {
 }
 
 // Get the number of cars between two intersections
-int HashTable::getNumOfCars (char intersection1, char intersection2) const {
+int CongestionHashTable::getNumOfCars (char intersection1, char intersection2) const {
 
     IntersectionPair key(intersection1, intersection2);
     int index = hash(key);
@@ -163,7 +163,7 @@ int HashTable::getNumOfCars (char intersection1, char intersection2) const {
     return -1; //if intersection pair was not found
 }
 
-void HashTable::displayRoadCongestion () const {
+void CongestionHashTable::displayRoadCongestion () const {
 
     bool isEmpty = true;
 
@@ -190,7 +190,7 @@ void HashTable::displayRoadCongestion () const {
 
 }
 
-IntersectionPair* HashTable::getCongestedRoads ( int congestionThreshold ) const {
+IntersectionPair* CongestionHashTable::getCongestedRoads ( int congestionThreshold ) const {
 
     //count the total number of congested roads to determine the array size
     int count = 0;
@@ -239,7 +239,7 @@ IntersectionPair* HashTable::getCongestedRoads ( int congestionThreshold ) const
 }
 
 
-void HashTable::updateRoad ( char intersection1, char intersection2, int carsOnRoad ) {
+void CongestionHashTable::updateRoad ( char intersection1, char intersection2, int carsOnRoad ) {
 
     if ( carsOnRoad < 0 )
         carsOnRoad = 0;
