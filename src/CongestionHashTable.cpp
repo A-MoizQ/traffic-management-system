@@ -27,13 +27,14 @@ CongestionHashTable::HashNode::HashNode ( const IntersectionPair& k, int v ):
             carsOnRoad = 0;
     }
 
-void CongestionHashTable::HashNode::print () const {
+void CongestionHashTable::HashNode::print ( int& line ) const {
 
-    cout<<"\nIntersection 1: "<<key.intersection1;
-    cout<<"\nIntersection 2: "<<key.intersection2;
-    cout<<"\nCars on this road: "<<carsOnRoad;
+    mvwprintw( line++, 1, "Intersection 1: %c", key.intersection1 );
+    mvwprintw( line++, 1, "Intersection 2: %c", key.intersection2 );
+    mvwprintw( line++, 1, "Cars on this road: %d", carsOnRoad );
+    line++; // Add a blank line for better readability
 
-};
+}
 
 CongestionHashTable::CongestionHashTable(int size) :
 
@@ -138,6 +139,7 @@ bool CongestionHashTable::remove ( char intersection1, char intersection2 ) {
 
     }
 
+    //not found
     return false;
 
 }
@@ -163,78 +165,40 @@ int CongestionHashTable::getNumOfCars (char intersection1, char intersection2) c
     return -1; //if intersection pair was not found
 }
 
-void CongestionHashTable::displayRoadCongestion () const {
+void CongestionHashTable::displayRoadCongestion(int congestionThreshold) const {
 
     bool isEmpty = true;
+    HashNode* current = nullptr;
+    int line = 1; //start printing at line 1 in the ncurses window
 
-    HashNode *current = nullptr;
+    mvwprintw(line++, 1, "=== Road Congestion Report ===");
 
-    for(int i = 0; i<arraySize;  i++){
+    for (int i = 0; i < arraySize; i++) {
 
         current = table[i];
 
-        while(current){
+        while (current) {
 
-            current->print();
+            //print road data
+            current->print(line);
+
+            //highlight congested roads
+            if (current->carsOnRoad >= congestionThreshold) {
+                mvwprintw(line++, 1, "  --> CONGESTED (Cars: %d)", current->carsOnRoad);
+            }
 
             current = current->next;
-
             isEmpty = false;
 
         }
 
     }
 
-    if ( isEmpty )
-        cout<<"\nNo road congestion data found\n";
-
-}
-
-IntersectionPair* CongestionHashTable::getCongestedRoads ( int congestionThreshold ) const {
-
-    //count the total number of congested roads to determine the array size
-    int count = 0;
-
-    for (int i = 0; i < arraySize; i++) {
-
-        HashNode* current = table[i];
-
-        while (current) {
-
-            if (current->carsOnRoad >= congestionThreshold) {
-                count++;
-            }
-
-            current = current->next;
-
-        }
+    if (isEmpty) {
+        mvwprintw(win, line++, 1, "No road congestion data found.");
     }
 
-    //if there are no congested roads then return nullptr
-    if(count==0)
-        return nullptr;
-
-    //allocate an array to hold the IntersectionPairs for congested roads
-    IntersectionPair* congestedRoads = new IntersectionPair[count];
-
-    //add IntersectionPairs that exceed the threshold
-    int index = 0;
-    for (int i = 0; i < arraySize; i++) {
-
-        HashNode* current = table[i];
-
-        while (current) {
-
-            if (current->carsOnRoad >= congestionThreshold) {
-                congestedRoads[index++] = current->key;
-            }
-
-            current = current->next;
-
-        }
-    }
-
-    return congestedRoads;
+    wrefresh(win); // Refresh ncurses window
 
 }
 

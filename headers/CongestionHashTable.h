@@ -32,12 +32,13 @@ class CongestionHashTable {
     //using chaining to overcome collisons of indexes
     HashNode **table ; // Dynamic array of pointers to linked lists i.e each index will be a linked list
     int arraySize ;
+    int congestionThreshold ; // A road is considered congested if num of cars on it are greater than this
 
     int hash ( const &IntersectionPair pair) const;
 
     public:
 
-    CongestionHashTable (int size = 101) ; // using a prime number to get less collisions
+    CongestionHashTable (int congestionThreshold = 20, int size = 101) ; // using a prime number to get less collisions
 
     ~CongestionHashTable () ;
 
@@ -48,9 +49,6 @@ class CongestionHashTable {
     int getNumOfCars ( char intersection1 ,char intersection2 ) const ;
 
     void displayRoadCongestion () const ;
-
-    //make sure to deallocate the returned array if its not nullptr
-    IntersectionPair* getCongestedRoads ( int congestionThreshold ) const ; //get all the roads where the number of vehicles is greater than or equal to the congestionThreshold
 
     void updateRoad ( char intersection1, char intersection2, int carsOnRoad ) ;
 
