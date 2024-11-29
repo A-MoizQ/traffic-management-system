@@ -10,7 +10,7 @@ class EmergencyQueue
         string vehicleId;
         char startPoint;
         char endPoint;
-        // 30 is for high, 15 is for medium ,and 0 is for medium
+        // 30 is for high, 15 is for medium ,and 0 is for low
         int priorityLevel;
         EmergencyNode* next;
         EmergencyNode(){}

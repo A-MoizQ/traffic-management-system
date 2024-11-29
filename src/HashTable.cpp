@@ -22,14 +22,27 @@ HashTable::HashNode::HashNode ( const IntersectionPair& k, int v ):
     carsOnRoad(v),
     next(nullptr)
     
-    {}
+    {
+        if( carsOnRoad < 0 )
+            carsOnRoad = 0;
+    }
 
+void HashTable::HashNode::print () const {
+
+    cout<<"\nIntersection 1: "<<key.intersection1;
+    cout<<"\nIntersection 2: "<<key.intersection2;
+    cout<<"\nCars on this road: "<<carsOnRoad;
+
+};
 
 HashTable::HashTable(int size) :
 
     arraySize(size)
     
     {
+
+    if(arraySize <= 0)
+        arraySize = 101;
 
     table = new HashNode*[ arraySize ];
 
@@ -58,6 +71,7 @@ HashTable::~HashTable() {
     }
 
     delete[] table;
+    table = nullptr;
 
 }
 
@@ -95,7 +109,7 @@ void HashTable::insert ( char intersection1, char intersection2, int carsOnRoad 
 }
 
 
-void HashTable::remove ( char intersection1, char intersection2 ) {
+bool HashTable::remove ( char intersection1, char intersection2 ) {
 
     IntersectionPair key(intersection1, intersection2);
     int index = hash(key);
@@ -115,7 +129,7 @@ void HashTable::remove ( char intersection1, char intersection2 ) {
             }
 
             delete current;
-            return;
+            return true;
 
         }
 
@@ -123,6 +137,8 @@ void HashTable::remove ( char intersection1, char intersection2 ) {
         current = current->next;
 
     }
+
+    return false;
 
 }
 
@@ -149,17 +165,84 @@ int HashTable::getNumOfCars (char intersection1, char intersection2) const {
 
 void HashTable::displayRoadCongestion () const {
 
-    
+    bool isEmpty = true;
+
+    HashNode *current = nullptr;
+
+    for(int i = 0; i<arraySize;  i++){
+
+        current = table[i];
+
+        while(current){
+
+            current->print();
+
+            current = current->next;
+
+            isEmpty = false;
+
+        }
+
+    }
+
+    if ( isEmpty )
+        cout<<"\nNo road congestion data found\n";
 
 }
 
 IntersectionPair* HashTable::getCongestedRoads ( int congestionThreshold ) const {
 
+    //count the total number of congested roads to determine the array size
+    int count = 0;
+
+    for (int i = 0; i < arraySize; i++) {
+
+        HashNode* current = table[i];
+
+        while (current) {
+
+            if (current->carsOnRoad >= congestionThreshold) {
+                count++;
+            }
+
+            current = current->next;
+
+        }
+    }
+
+    //if there are no congested roads then return nullptr
+    if(count==0)
+        return nullptr;
+
+    //allocate an array to hold the IntersectionPairs for congested roads
+    IntersectionPair* congestedRoads = new IntersectionPair[count];
+
+    //add IntersectionPairs that exceed the threshold
+    int index = 0;
+    for (int i = 0; i < arraySize; i++) {
+
+        HashNode* current = table[i];
+
+        while (current) {
+
+            if (current->carsOnRoad >= congestionThreshold) {
+                congestedRoads[index++] = current->key;
+            }
+
+            current = current->next;
+
+        }
+    }
+
+    return congestedRoads;
 
 }
 
 
-void HashTable::insert ( char intersection1, char intersection2, int carsOnRoad ) {
+void HashTable::updateRoad ( char intersection1, char intersection2, int carsOnRoad ) {
+
+    if ( carsOnRoad < 0 )
+        carsOnRoad = 0;
 
     IntersectionPair key(intersection1, intersection2);
     int index = hash(key);
@@ -169,8 +252,12 @@ void HashTable::insert ( char intersection1, char intersection2, int carsOnRoad 
     while (current) { //loop till the end of list
 
         //if key found then update
-        if (current -> key == key)
+        if (current -> key == key) {
+
             current -> carsOnRoad = carsOnRoad ;
+            return;
+
+        }
 
         current = current->next;
 

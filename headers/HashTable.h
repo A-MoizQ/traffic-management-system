@@ -25,6 +25,8 @@ class HashTable {
 
         HashNode (const IntersectionPair& k, int v);
 
+        void print() const;
+
     } ;
 
     //using chaining to overcome collisons of indexes
@@ -41,12 +43,13 @@ class HashTable {
 
     void insert ( char intersection1, char intersection2 , int carsOnRoad ) ;
 
-    void remove ( char intersection1, char intersection2 ) ;
+    bool remove ( char intersection1, char intersection2 ) ;
 
     int getNumOfCars ( char intersection1 ,char intersection2 ) const ;
 
     void displayRoadCongestion () const ;
 
+    //make sure to deallocate the returned array if its not nullptr
     IntersectionPair* getCongestedRoads ( int congestionThreshold ) const ; //get all the roads where the number of vehicles is greater than or equal to the congestionThreshold
 
     void updateRoad ( char intersection1, char intersection2, int carsOnRoad ) ;
