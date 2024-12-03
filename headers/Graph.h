@@ -17,9 +17,12 @@ public:
     Graph();
     void loadFromFile(std::string fileName);
     void display() const;
+    void displayBlockedRoads() const;
     void setAdjacent(int weight,Node* vertex,char adjacent);
+    void setRoadClosures(std::string file);
     void setVertex(char name);
     Node* searchVertex(char name);
+    Node* searchAdjacent(Node* adjList,char name);
     void clearGraph();
     ~Graph();
 

@@ -1,7 +1,5 @@
 #include<ncurses.h>
 #include "../headers/Graph.h"
-#include "../headers/CongestionHashTable.h"
-
 using namespace std;
 
 int main(){
@@ -9,25 +7,14 @@ int main(){
     noecho();               
     curs_set(0);            
     nodelay(stdscr, TRUE);  
-    keypad(stdscr, TRUE);
-
+    keypad(stdscr, TRUE); 
     int choice = -1;
-
     //make graph object
     Graph g;
-
-    //The size of the hash table should be prime
-    //Possible names of the intersections are from A - Z so 27 different names
-    //27 * 27 = 729
-    //closest prime to 729 = 727
-    //pass the congestion threshold and size of the hash table
-    CongestionHashTable congestion(5, 727);  
-
     //load content from file into graph
     g.loadFromFile("./data/road_network.csv");
-
+    g.setRoadClosures("./data/road_closures.csv");
     do{
-
         int r = 0; int c = 0;
         //clears screen
         erase();
@@ -69,10 +56,12 @@ int main(){
             }
             else if(choice == 3){
 
+            }
+            else if(choice == 4){
                 //clear screen
                 erase();
-                //display the congestion data
-                congestion.displayRoadCongestion();
+                //display blocked roads
+                g.displayBlockedRoads();
                 //disable non blocking input
                 nodelay(stdscr, FALSE); 
                 //wait for user to press a key
@@ -80,11 +69,6 @@ int main(){
                 //re enable non blocking input
                 nodelay(stdscr, TRUE); 
                 choice = -1; //reset choice to allow for non blocking input
-
-
-            }
-            else if(choice == 4){
-
             }
             else if(choice == 5){
 

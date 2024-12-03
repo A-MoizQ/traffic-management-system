@@ -1,7 +1,4 @@
 #include "../headers/Emergency.h"
-
-using namespace std;
-
     EmergencyQueue:: EmergencyQueue():EmergencyQueueList(nullptr){}
 
     
@@ -35,15 +32,13 @@ using namespace std;
             newNode->next = backup->next;
             backup->next = newNode;
         }  
-        cout << newNode->priorityLevel << " "; 
     }
 
 
     //  to delete the whole queue
     void EmergencyQueue:: deletEmergencyQueue(){
         EmergencyNode* backup;
-        while (EmergencyQueueList != nullptr)
-        {
+        while (EmergencyQueueList != nullptr){
             backup = EmergencyQueueList;
             EmergencyQueueList = EmergencyQueueList->next;
             delete backup;
@@ -55,21 +50,18 @@ using namespace std;
         deletEmergencyQueue();
     }
 
-    void EmergencyQueue:: display(){
-        // display function is not done as it requires some desigining
-        cout << "Display" << endl;
-    }
 
     void EmergencyQueue:: removeFromEmergencyQueue(){
-        if (EmergencyQueueList == nullptr)
-        {
-            cout << "Set this with ncurses ka no car is present in it " << endl;
+        if (EmergencyQueueList == nullptr){
+            erase();
+            mvprintw(0,0,"Queue is empty!");
+            refresh();
+            napms(1000);
             return;
         }
         else{
             EmergencyNode* backup = EmergencyQueueList;
             EmergencyQueueList = EmergencyQueueList->next;
-            cout << "Display the information of the dequeued car" << endl;
             delete backup;
         }
     }
