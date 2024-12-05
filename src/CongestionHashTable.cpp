@@ -27,16 +27,16 @@ CongestionHashTable::HashNode::HashNode ( const IntersectionPair& k, int v ):
             carsOnRoad = 0;
     }
 
-void CongestionHashTable::HashNode::print ( int& line ) const {
+void CongestionHashTable::HashNode::print (WINDOW *win, int& line ) const {
 
-    mvwprintw( line++, 1, "Intersection 1: %c", key.intersection1 );
-    mvwprintw( line++, 1, "Intersection 2: %c", key.intersection2 );
-    mvwprintw( line++, 1, "Cars on this road: %d", carsOnRoad );
+    mvwprintw( win,line++, 1, "Intersection 1: %c", key.intersection1 );
+    mvwprintw( win,line++, 1, "Intersection 2: %c", key.intersection2 );
+    mvwprintw( win,line++, 1, "Cars on this road: %d", carsOnRoad );
     line++; // Add a blank line for better readability
 
 }
 
-CongestionHashTable::CongestionHashTable(int size) :
+CongestionHashTable::CongestionHashTable(int congestionThreshold, int size) :
 
     arraySize(size)
     
@@ -85,6 +85,10 @@ int CongestionHashTable::hash(const IntersectionPair& pair) const {
 
 
 void CongestionHashTable::insert ( char intersection1, char intersection2, int carsOnRoad ) {
+
+    if (carsOnRoad < 0) {
+        carsOnRoad = 0; // Prevent negative cars count
+    }
 
     IntersectionPair key(intersection1, intersection2);
     int index = hash(key);
@@ -165,13 +169,13 @@ int CongestionHashTable::getNumOfCars (char intersection1, char intersection2) c
     return -1; //if intersection pair was not found
 }
 
-void CongestionHashTable::displayRoadCongestion(int congestionThreshold) const {
+void CongestionHashTable::displayRoadCongestion(WINDOW *win) const {
 
     bool isEmpty = true;
     HashNode* current = nullptr;
     int line = 1; //start printing at line 1 in the ncurses window
 
-    mvwprintw(line++, 1, "=== Road Congestion Report ===");
+    mvwprintw(win, line++, 1, "=== Road Congestion Report ===");
 
     for (int i = 0; i < arraySize; i++) {
 
@@ -180,11 +184,11 @@ void CongestionHashTable::displayRoadCongestion(int congestionThreshold) const {
         while (current) {
 
             //print road data
-            current->print(line);
+            current->print(win,line);
 
             //highlight congested roads
             if (current->carsOnRoad >= congestionThreshold) {
-                mvwprintw(line++, 1, "  --> CONGESTED (Cars: %d)", current->carsOnRoad);
+                mvwprintw(win,line++, 1, "  --> CONGESTED (Cars: %d)", current->carsOnRoad);
             }
 
             current = current->next;
