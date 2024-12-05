@@ -66,7 +66,7 @@ int main(){
                 //clear screen
                 erase();
                 //display the congestion
-                congestion.displayRoadCongestion();
+                congestion.displayRoadCongestion(win);
                 //disable non blocking input
                 nodelay(stdscr, FALSE); 
                 //wait for user to press a key
