@@ -36,7 +36,7 @@ void CongestionHashTable::HashNode::print ( int& line ) const {
 
 }
 
-CongestionHashTable::CongestionHashTable(int size) :
+CongestionHashTable::CongestionHashTable(int congestionThreshold = 20, int size = 101) :
 
     arraySize(size)
     
@@ -85,6 +85,10 @@ int CongestionHashTable::hash(const IntersectionPair& pair) const {
 
 
 void CongestionHashTable::insert ( char intersection1, char intersection2, int carsOnRoad ) {
+
+    if (carsOnRoad < 0) {
+        carsOnRoad = 0; // Prevent negative cars count
+    }
 
     IntersectionPair key(intersection1, intersection2);
     int index = hash(key);
@@ -165,7 +169,7 @@ int CongestionHashTable::getNumOfCars (char intersection1, char intersection2) c
     return -1; //if intersection pair was not found
 }
 
-void CongestionHashTable::displayRoadCongestion(int congestionThreshold) const {
+void CongestionHashTable::displayRoadCongestion() const {
 
     bool isEmpty = true;
     HashNode* current = nullptr;
@@ -195,10 +199,10 @@ void CongestionHashTable::displayRoadCongestion(int congestionThreshold) const {
     }
 
     if (isEmpty) {
-        mvwprintw(win, line++, 1, "No road congestion data found.");
+        mvwprintw(line++, 1, "No road congestion data found.");
     }
 
-    wrefresh(win); // Refresh ncurses window
+    wrefresh(); // Refresh ncurses window
 
 }
 

@@ -25,7 +25,7 @@ class CongestionHashTable {
 
         HashNode (const IntersectionPair& k, int v);
 
-        void print() const;
+        void print(int &line) const;
 
     } ;
 
@@ -34,7 +34,7 @@ class CongestionHashTable {
     int arraySize ;
     int congestionThreshold ; // A road is considered congested if num of cars on it are greater than this
 
-    int hash ( const &IntersectionPair pair) const;
+    int hash ( const IntersectionPair& pair) const;
 
     public:
 
