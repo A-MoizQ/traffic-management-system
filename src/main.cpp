@@ -1,9 +1,10 @@
 #include<ncurses.h>
 #include "../headers/Graph.h"
+#include "../headers/CongestionHashTable.h"
 using namespace std;
 
 int main(){
-    initscr();
+    WINDOW *win = initscr();
     noecho();               
     curs_set(0);            
     nodelay(stdscr, TRUE);  
@@ -14,6 +15,13 @@ int main(){
     //load content from file into graph
     g.loadFromFile("./data/road_network.csv");
     g.setRoadClosures("./data/road_closures.csv");
+
+    //assume the names of the intersection will be from A-Z which is total 27 names
+    //for a road 2 of these inter. are needed so there are possible 27 * 27 = 729 cominations for the name of the road
+    //we will use 727 as the size of the hashtable bcz its a prime number and will have minimum collisions
+    //pass the congestion threshold and size of the hash map
+    CongestionHashTable congestion(5, 727);
+
     do{
         int r = 0; int c = 0;
         //clears screen
@@ -55,7 +63,17 @@ int main(){
 
             }
             else if(choice == 3){
-
+                //clear screen
+                erase();
+                //display the congestion
+                congestion.displayRoadCongestion();
+                //disable non blocking input
+                nodelay(stdscr, FALSE); 
+                //wait for user to press a key
+                getch();
+                //re enable non blocking input
+                nodelay(stdscr, TRUE); 
+                choice = -1; //reset choice to allow for non blocking input
             }
             else if(choice == 4){
                 //clear screen

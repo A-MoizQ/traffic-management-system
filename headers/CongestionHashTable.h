@@ -2,6 +2,7 @@
 #define CONGESTION_HASH_TABLE_H
 
 #include <iostream>
+#include<ncurses.h>
 
 struct IntersectionPair {
 
@@ -25,7 +26,7 @@ class CongestionHashTable {
 
         HashNode (const IntersectionPair& k, int v);
 
-        void print(int &line) const;
+        void print(WINDOW *win, int &line) const;
 
     } ;
 
@@ -48,7 +49,7 @@ class CongestionHashTable {
 
     int getNumOfCars ( char intersection1 ,char intersection2 ) const ;
 
-    void displayRoadCongestion () const ;
+    void displayRoadCongestion (WINDOW *win) const ;
 
     void updateRoad ( char intersection1, char intersection2, int carsOnRoad ) ;
 
