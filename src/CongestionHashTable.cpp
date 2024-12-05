@@ -1,5 +1,11 @@
 #include "../headers/CongestionHashTable.h"
 
+/*
+TODO:
+- wrtie = for intersection pair
+
+*/
+
 IntersectionPair::IntersectionPair () :
 
     //make an empty intersection pair

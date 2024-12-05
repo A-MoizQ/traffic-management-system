@@ -12,11 +12,14 @@ class TrafficSignal{
 
         char name;
         bool isGreen;
-        int timeCounter; 
-        int totalTime;
-        int timeIncrement; 
+        int timeCounter; //variable to keep track of the time passed
+        int totalTime; //original green time of the intersection
+        int timeIncrement; //the value by which the green time was changes
 
         Intersection(char _name, int _totalTime);
+        Intersection();
+
+        void operator= (const Intersection &i);
 
     };
 

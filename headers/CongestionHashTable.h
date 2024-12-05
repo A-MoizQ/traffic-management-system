@@ -14,6 +14,7 @@ struct IntersectionPair {
     IntersectionPair (char inter1, char inter2) ;
 
     bool operator==(const IntersectionPair& other) const ;
+    void operator=(const IntersectionPair& other) const ;
 
 } ;
 
