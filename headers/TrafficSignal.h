@@ -34,9 +34,9 @@ class TrafficSignal{
 
     void displayTraffic();
 
-    void reduceCongestion(char intersectioName);
+    void reduceCongestion(char name, int extraCars, bool turnGreenInstantly = false);
 
-    void update();
+    void update(int numOfRoads); //this will pick random roads and remove or add cars to it to simulate traffic flow
 
 
 

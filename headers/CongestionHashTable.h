@@ -9,6 +9,8 @@ struct IntersectionPair {
     char intersection1;
     char intersection2;
 
+    IntersectionPair () ; //to create an empty intersection pair indicated by NUL
+
     IntersectionPair (char inter1, char inter2) ;
 
     bool operator==(const IntersectionPair& other) const ;
@@ -35,13 +37,13 @@ class CongestionHashTable {
     int arraySize ;
     int congestionThreshold ; // A road is considered congested if num of cars on it are greater than this
 
-    int hash ( const IntersectionPair& pair) const;
-
     public:
 
     CongestionHashTable (int congestionThreshold = 20, int size = 101) ; // using a prime number to get less collisions
 
     ~CongestionHashTable () ;
+
+    int hash ( const IntersectionPair& pair) const;
 
     void insert ( char intersection1, char intersection2 , int carsOnRoad ) ;
 
@@ -52,6 +54,10 @@ class CongestionHashTable {
     void displayRoadCongestion (WINDOW *win) const ;
 
     void updateRoad ( char intersection1, char intersection2, int carsOnRoad ) ;
+
+    IntersectionPair getIntersectionAtIndx( int indx );
+
+    IntersectionPair getIntersectionAfterIndx( int indx ); //if the given indx is unoccupied, then it will return the first occupied value
 
 };
 

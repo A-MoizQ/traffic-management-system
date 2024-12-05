@@ -1,5 +1,12 @@
 #include "../headers/CongestionHashTable.h"
 
+IntersectionPair::IntersectionPair () :
+
+    //make an empty intersection pair
+    intersection1('NUL'),
+    intersection2('NUL')
+
+    {}
 
 IntersectionPair::IntersectionPair ( char inter1, char inter2 ) :
 
@@ -236,4 +243,60 @@ void CongestionHashTable::updateRoad ( char intersection1, char intersection2, i
     newNode->next = table[index];
     table[index] = newNode;
     
+}
+
+IntersectionPair CongestionHashTable::getIntersectionAtIndx( int indx ) {
+
+    //indx out of range
+    if ( indx >= arraySize || indx < 0 ){
+
+        IntersectionPair emptyIntersectionPair
+        return emptyIntersectionPair;
+
+    }
+
+    //no intersections exist at the index
+    if ( table[indx] == nullptr ) {
+
+        IntersectionPair emptyIntersectionPair
+        return emptyIntersectionPair;
+
+    }
+
+    //get the node and return its key i.e intersectionPair
+    return (table[indx])->key;
+
+}
+
+
+IntersectionPair CongestionHashTable::getIntersectionAfterIndx( int indx ) {
+
+    IntersectionPair pair = getIntersectionAtIndx(indx);
+
+
+    //if the index was occupied
+    if(pair.intersection1 != 'NUL' && pair.intersection2!='NUL') {
+
+        return pair;
+
+    }
+
+
+    for( int i = indx + 1; ;i++ ){
+
+        //if reached the end of the array then loop from the start
+        if( i>=arraySize )
+            i = 0;
+
+        //if we reach back to the original indx then the array is empty so return the empty pair
+        if( i==indx )
+            return pair;
+
+        IntersectionPair p = getIntersectionAtIndx(i);
+
+        if( p.intersection1 != 'NUL' && p.intersection2!='NUL' ) 
+            return p;
+
+    }
+
 }

@@ -30,3 +30,6 @@ clean:
 
 # Phony targets
 .PHONY: all clean
+
+#all object files in the directory and the subdirectories
+**/*.o

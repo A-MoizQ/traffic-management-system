@@ -11,7 +11,12 @@ TrafficSignal::Intersection::Intersection(char _name, int _totalTime) :
     {}
 
 
-TrafficSignal::TrafficSignal() {
+TrafficSignal::TrafficSignal() :
+
+    //pass the congestion threshold and hashtable size
+    congestion(5, 727)
+
+ {
 
     //this is a kind of hash map which will store the intersection info
     //at the index equal to the ascii of the name of the intersection
@@ -103,13 +108,13 @@ TrafficSignal::~TrafficSignal(){
 
 }
 
-TrafficSignal::getRandomValue() {
+TrafficSignal::getRandomValue(int min, int max) {
 
     return min + (rand() % (max - min + 1));
 
 }
 
-void reduceCongestion(char name, int extraCars, bool turnGreenInstantly = false;){
+void reduceCongestion(char name, int extraCars, bool turnGreenInstantly = false){
 
     Intersection i = intersections[ static_cast<int>name ];
 
@@ -129,15 +134,44 @@ void reduceCongestion(char name, int extraCars, bool turnGreenInstantly = false;
 
 }
 
-void update() {
+void update(int numOfRoads) {
 
-    char randomIntersectionName = static_cast<char>(getRandomValue('A', 'Z'));
-    char randomIntersectionName2 = static_cast<char>(getRandomValue('A', 'Z'));
+    if(numOfRoads<=0)
+        return;
 
-    //get the road
-    //randomly add or remove a car to the road
-    //might need to implement a get road function in the congestionHashMap
-    //might also need to implement a get congested roads function
+    for  ( int i = 0 ; i < numOfRoads ; i++ ) {
+
+        int randomIndx = getRandomValue(0, 726);
+        IntersectionPair road = getIntersectionAfterIndx(randomIndx); //get a random road
+
+        bool add = getRandomValue(0,1); //randomly add or remove cars
+        int numOfCars = getNumOfCars ( road.intersection1, road.intersection2 ) ;
+        int change = getRandomValue(0, numOfCars); //this will be added or subtracted from numOfCars on road
+        if(add)
+            numOfCars += change;
+        else{
+            //suppose cars are going from intersection1 to intersection2
+            //only remove the cars from the road if the intersection2 is green
+            if( intersections[intersection2].isGreen )
+                numOfCars -= change;
+        }
+
+        //update the value in the congestion table
+        congestion.updateRoad( road.intersection1, road.intersection2, numOfCars ); 
+
+        //if the road is congested
+        if(numOfCars > congestionThreshold) {
+
+            int extraCars = numOfCars - congestionThreshold;
+
+            if(numOfCars >= 2*congestionThreshold) //if the road is very congested then turn the signal green instanltly
+                reduceCongestion( road.intersection2,extraCars, true  );
+            else
+                reduceCongestion( road.intersection2,extraCars, true  );
+
+        }
+
+    }
 
 }
 
