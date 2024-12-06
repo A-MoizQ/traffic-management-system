@@ -14,7 +14,7 @@ struct IntersectionPair {
     IntersectionPair (char inter1, char inter2) ;
 
     bool operator==(const IntersectionPair& other) const ;
-    void operator=(const IntersectionPair& other) const ;
+    void operator=(const IntersectionPair& other) ;
 
 } ;
 
@@ -56,10 +56,9 @@ class CongestionHashTable {
 
     void updateRoad ( char intersection1, char intersection2, int carsOnRoad ) ;
 
-    IntersectionPair getIntersectionAtIndx( int indx );
+    IntersectionPair getIntersectionAtIndx( int indx ) const;
 
-    IntersectionPair getIntersectionAfterIndx( int indx ); //if the given indx is unoccupied, then it will return the first occupied value
-
+    IntersectionPair getIntersectionAfterIndx( int indx ) const; //get the value using linear probing
 };
 
 #endif

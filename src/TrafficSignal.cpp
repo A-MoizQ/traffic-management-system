@@ -14,7 +14,11 @@ TrafficSignal::Intersection::Intersection(char _name, int _totalTime) :
     timeCounter(0),
     timeIncrement(0)
 
-    {}
+    {
+        if(totalTime<0)
+            totalTime = 1;
+
+    }
 
 TrafficSignal::Intersection::Intersection() :
 
@@ -139,7 +143,7 @@ TrafficSignal::~TrafficSignal(){
 
 }
 
-TrafficSignal::getRandomValue(int min, int max) {
+TrafficSignal::getRandomValue(int min, int max) const {
 
     return min + (rand() % (max - min + 1));
 
@@ -147,9 +151,23 @@ TrafficSignal::getRandomValue(int min, int max) {
 
 void reduceCongestion(char name, int extraCars, bool turnGreenInstantly = false){
 
+    if(name >=intersectionArrSize || name <0 ) //invalid name
+        return;
+
+
     Intersection i = intersections[ static_cast<int>name ]; //get the intersection object
 
+    if(extraCars <=0 ){ //this means there is no congestion
+        //revert to original state
+        i.timeIncrement = 0;
+        return;
+    }
+
+
     i.timeIncrement = extraCars * 2;
+
+    if(extraCars >= 2*congestionThreshold) //if the road is very congested then turn the signal green instanltly
+        turnGreenInstantly = true;
 
     if(turnGreenInstantly){
         i.isGreen = true;
@@ -157,31 +175,27 @@ void reduceCongestion(char name, int extraCars, bool turnGreenInstantly = false)
         return;
     }
 
-    //add the incremented time only when the light is green.
-    //if the light is not green i.e red then do this:
-    //when the timCounter is <= timeIncrement then turn the light green
-    //dont wait till it goes to 0
-    //this way we will decrease the red time as well
-
 
 }
 
 void updateTime(){
 
-    for (int i = 0 ; i < 127 ; i++) { //loop through all intersections
+    for (int i = 0 ; i < intersectionArrSize ; i++) { //loop through all intersections
 
         Intersection inter = intersections[i];
 
-        if( inter.name != 'NUL' ){ //if the intersection is not empty
+        if( inter.name != 'NUL' ){ //if the index is not empty
 
-            ((intersections[i]).timeCounter) -= 1;
+            ((intersections[i]).timeCounter) -= 1; //reduce the elpased time
 
             if( intersections[i].timeCounter == 0 ) //if the green time is up, turn the light red
                 intersections[i],isGreen = false;
 
-            else if( intersections[i].timeCounter <= intersections[i].totalTime * -1 ){ //if red time (which will be negative) is up i.r redtime == -totalTime 
+            //if red time (which will be negative) is up i.e redtime == timeIncrement-totalTime 
+            //timeIncrement-totalTime is used instead of just totalTime to reduce the red time when road is congested
+            else if( intersections[i].timeCounter <= intersections[i].timeIncrement - intersections[i].totalTime  ){ 
                 intersections[i].isGreen = true;
-                intersections[i].timeCounter = totalTime; //reset the time
+                intersections[i].timeCounter = totalTime + timeIncrement; //reset the time
             }
 
         }
@@ -190,26 +204,25 @@ void updateTime(){
 
 }
 
-void update(int numOfRoads) {
+void updateCongestion(int numOfRoads) {
 
-    updateTime();
-
-    if(numOfRoads<=0)
+    if(numOfRoads<=0 || numOfRoads>=hashTableSize) //input validation
         return;
 
     for  ( int i = 0 ; i < numOfRoads ; i++ ) {
 
-        int randomIndx = getRandomValue(0, 726);
-        IntersectionPair road = getIntersectionAfterIndx(randomIndx); //get a random road
+        int randomIndx = getRandomValue(0, hashTableSize);
+        IntersectionPair road = getIntersectionAfterIndx(randomIndx); //get a random road through linear probing
 
         bool add = getRandomValue(0,1); //randomly add or remove cars
         int numOfCars = getNumOfCars ( road.intersection1, road.intersection2 ) ;
         int change = getRandomValue(0, numOfCars); //this will be added or subtracted from numOfCars on road
+
         if(add)
             numOfCars += change;
         else{
             //suppose cars are going from intersection1 to intersection2
-            //only remove the cars from the road if the intersection2 is green
+            //only remove the cars from the road if the signal is green bcz cars can only move when signal is green duh
             if( intersections[intersection2].isGreen )
                 numOfCars -= change;
         }
@@ -217,19 +230,15 @@ void update(int numOfRoads) {
         //update the value in the congestion table
         congestion.updateRoad( road.intersection1, road.intersection2, numOfCars ); 
 
-        //if the road is congested
-        if(numOfCars > congestionThreshold) {
-
-            int extraCars = numOfCars - congestionThreshold;
-
-            if(numOfCars >= 2*congestionThreshold) //if the road is very congested then turn the signal green instanltly
-                reduceCongestion( road.intersection2,extraCars, true  );
-            else
-                reduceCongestion( road.intersection2,extraCars, false  );
-
-        }
-
+        int extraCars = numOfCars - congestionThreshold;
+        reduceCongestion(road.intersection2, extraCars);
+        
     }
 
 }
 
+void displayTraffic(WINDOW *win, int &line) const {
+
+
+
+}

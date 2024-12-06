@@ -2,6 +2,7 @@
 #define TRAFFICSIGNAL_H
 #include "CongestionHashTable.h"
 #include<fstream>
+#include<ncurses.h>
 
 
 
@@ -12,6 +13,8 @@ class TrafficSignal{
 
         char name;
         bool isGreen;
+
+        //time is represented in seconds
         int timeCounter; //variable to keep track of the time passed
         int totalTime; //original green time of the intersection
         int timeIncrement; //the value by which the green time was changes
@@ -27,11 +30,11 @@ class TrafficSignal{
 
     Intersection *intersections;
 
-    int getRandomValue(int min, int max);
+    int getRandomValue(int min, int max) const;
 
-    const int hashTableSize;
-    const int congestionThreshold;
-    const int intersectionArrSize;
+    int hashTableSize;
+    int congestionThreshold;
+    int intersectionArrSize;
 
     public:
 
@@ -39,13 +42,13 @@ class TrafficSignal{
 
     ~TrafficSignal();
 
-    void displayTraffic();
-
     void reduceCongestion(char name, int extraCars, bool turnGreenInstantly = false);
 
-    void update(int numOfRoads); //this will pick random roads and remove or add cars to it to simulate traffic flow
+    void updateTime(); //update all the traffic lights time by 1 second
 
+    void updateCongestion(int numOfRoads); //this will pick random roads and remove or add cars to it to simulate traffic flow
 
+    void displayTraffic(WINDOW *win, int &line) const; //line is the variable storing current line in the window
 
 };
 

@@ -1,10 +1,5 @@
 #include "../headers/CongestionHashTable.h"
 
-/*
-TODO:
-- wrtie = for intersection pair
-
-*/
 
 IntersectionPair::IntersectionPair () :
 
@@ -25,6 +20,13 @@ IntersectionPair::IntersectionPair ( char inter1, char inter2 ) :
 bool IntersectionPair::operator== ( const IntersectionPair& other ) const {
 
     return intersection1 == other.intersection1 && intersection2 == other.intersection2;
+
+}
+
+void IntersectionPair::operator= (const IntersectionPair& other) {
+
+    intersection1 = other.intersection1;
+    intersection2 = other.intersection2;
 
 }
 
@@ -57,6 +59,9 @@ CongestionHashTable::CongestionHashTable(int congestionThreshold, int size) :
 
     if(arraySize <= 0)
         arraySize = 101;
+
+    if(congestionThreshold <=0)
+        congestionThreshold =1;
 
     table = new HashNode*[ arraySize ];
 
@@ -251,12 +256,12 @@ void CongestionHashTable::updateRoad ( char intersection1, char intersection2, i
     
 }
 
-IntersectionPair CongestionHashTable::getIntersectionAtIndx( int indx ) {
+IntersectionPair CongestionHashTable::getIntersectionAtIndx( int indx ) const{
 
     //indx out of range
     if ( indx >= arraySize || indx < 0 ){
 
-        IntersectionPair emptyIntersectionPair
+        IntersectionPair emptyIntersectionPair;
         return emptyIntersectionPair;
 
     }
@@ -275,19 +280,18 @@ IntersectionPair CongestionHashTable::getIntersectionAtIndx( int indx ) {
 }
 
 
-IntersectionPair CongestionHashTable::getIntersectionAfterIndx( int indx ) {
+IntersectionPair CongestionHashTable::getIntersectionAfterIndx( int indx ) const{
 
     IntersectionPair pair = getIntersectionAtIndx(indx);
 
 
-    //if the index was occupied
+    //if the index was not nul then return the obtained pair
     if(pair.intersection1 != 'NUL' && pair.intersection2!='NUL') {
-
         return pair;
 
     }
 
-
+    //if the index was empty then find the next valid index using linear probing
     for( int i = indx + 1; ;i++ ){
 
         //if reached the end of the array then loop from the start
