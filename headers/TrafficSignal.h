@@ -29,9 +29,13 @@ class TrafficSignal{
 
     int getRandomValue(int min, int max);
 
+    const int hashTableSize;
+    const int congestionThreshold;
+    const int intersectionArrSize;
+
     public:
 
-    TrafficSignal();
+    TrafficSignal(int conThreshold = 5, int hashTSize = 727);
 
     ~TrafficSignal();
 

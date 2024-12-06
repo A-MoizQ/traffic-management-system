@@ -1,12 +1,8 @@
 #include "../headers/TrafficSignal"
 
-
 /*
-TODO: 
-- make intersection default constructor and = 
-- init intersections with empty intersections instead of 'NUL' in TrafficSignal()
+TODO:
 - Write a display function
-- add data members for size of arrays / hashMaps
 - return the intersection time back to normal if congestion is resolved
 */
 
@@ -20,20 +16,45 @@ TrafficSignal::Intersection::Intersection(char _name, int _totalTime) :
 
     {}
 
+TrafficSignal::Intersection::Intersection() :
 
-TrafficSignal::TrafficSignal() :
+    name('NUL'),
+    isGreen(false),
+    timeCounter(0),
+    totalTime(0),
+    timeIncrement(0)
 
+    {}
+
+
+TrafficSignal::Intersection::operator= (const Intersection &i) {
+
+    name = i.name;
+    isGreen = i.isGreen;
+    timeCounter = i.timCounter;
+    totalTime = i.totalTime;
+    timeIncrement = i.timeIncrement;
+
+}
+
+
+TrafficSignal::TrafficSignal(int conThreshold, int hashTSize) :
+
+    congestionThreshold(conThreshold),
+    hashTableSize(hashTSize),
     //pass the congestion threshold and hashtable size
-    congestion(5, 727)
+    congestion(congestionThreshold, hashTSize),
+    intersectionArrSize(128) //to store ascii from 0 - 127
 
  {
 
     //this is a kind of hash map which will store the intersection info
     //at the index equal to the ascii of the name of the intersection
-    intersections = new char[127];
+    intersections = new char[intersectionArrSize];
 
-    for(int i = 0;i<127;i++){
-        intersections[i] = 'NUL'; //this indicates that the index is empty
+    for(int i = 0;i<intersectionArrSize;i++){
+        Intersection emptyIntersection; //make an empty intersection
+        intersections[i] = emptyIntersection; //this indicates that the index is empty
     }
 
 
