@@ -4,8 +4,8 @@
 IntersectionPair::IntersectionPair () :
 
     //make an empty intersection pair
-    intersection1('NUL'),
-    intersection2('NUL')
+    intersection1(0),
+    intersection2(0)
 
     {}
 
@@ -269,7 +269,7 @@ IntersectionPair CongestionHashTable::getIntersectionAtIndx( int indx ) const{
     //no intersections exist at the index
     if ( table[indx] == nullptr ) {
 
-        IntersectionPair emptyIntersectionPair
+        IntersectionPair emptyIntersectionPair;
         return emptyIntersectionPair;
 
     }
@@ -280,13 +280,13 @@ IntersectionPair CongestionHashTable::getIntersectionAtIndx( int indx ) const{
 }
 
 
-IntersectionPair CongestionHashTable::getIntersectionAfterIndx( int indx ) const{
+IntersectionPair CongestionHashTable::getInterLinearProbing( int indx ) const{
 
     IntersectionPair pair = getIntersectionAtIndx(indx);
 
 
     //if the index was not nul then return the obtained pair
-    if(pair.intersection1 != 'NUL' && pair.intersection2!='NUL') {
+    if(pair.intersection1 != 0 && pair.intersection2!=0) {
         return pair;
 
     }
@@ -304,7 +304,7 @@ IntersectionPair CongestionHashTable::getIntersectionAfterIndx( int indx ) const
 
         IntersectionPair p = getIntersectionAtIndx(i);
 
-        if( p.intersection1 != 'NUL' && p.intersection2!='NUL' ) 
+        if( p.intersection1 != 0 && p.intersection2!=0 ) 
             return p;
 
     }

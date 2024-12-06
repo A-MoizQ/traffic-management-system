@@ -28,13 +28,13 @@ class TrafficSignal{
 
     CongestionHashTable congestion;
 
-    Intersection *intersections;
-
-    int getRandomValue(int min, int max) const;
-
     int hashTableSize;
     int congestionThreshold;
     int intersectionArrSize;
+
+    Intersection *intersections;
+
+    int getRandomValue(int min, int max) const;
 
     public:
 

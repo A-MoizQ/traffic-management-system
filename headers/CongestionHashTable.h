@@ -58,7 +58,7 @@ class CongestionHashTable {
 
     IntersectionPair getIntersectionAtIndx( int indx ) const;
 
-    IntersectionPair getIntersectionAfterIndx( int indx ) const; //get the value using linear probing
+    IntersectionPair getInterLinearProbing( int indx ) const; //get the value using linear probing
 };
 
 #endif
