@@ -1,6 +1,7 @@
 #include<ncurses.h>
 #include "../headers/Graph.h"
 #include "../headers/CongestionHashTable.h"
+#include "../headers/Emergency.h"
 using namespace std;
 
 int main(){
@@ -45,6 +46,7 @@ int main(){
         mvprintw(r,c,"[7]. Simulate Vehicle Routing");
         r++;
         choice = getch() - '0';
+        // choice = 5;
         if(choice != 0){
             if(choice == 1){
                 //clear screen
@@ -88,8 +90,19 @@ int main(){
                 nodelay(stdscr, TRUE); 
                 choice = -1; //reset choice to allow for non blocking input
             }
-            else if(choice == 5){
-
+             else if(choice == 5){
+                //clear screen
+                erase();
+                //disable non blocking input
+                nodelay(stdscr, FALSE); 
+                EmergencyQueue em;
+                em.loadFromEmergencyCsv("./data/emergency_vehicles.csv");
+                em.executeEmergencyVehicles(&g);
+                //wait for user to press a key
+                getch();
+                //re enable non blocking input
+                nodelay(stdscr, TRUE); 
+                choice = -1; //reset choice to allow for non blocking input
             }
             else if(choice == 6){
 
@@ -110,7 +123,6 @@ int main(){
                 choice = -1;
             }
         }
-
         refresh();
         napms(150);
 

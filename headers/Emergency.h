@@ -3,6 +3,7 @@
 #include<string>
 #include<ncurses.h>
 #include<fstream>
+#include"../headers/Graph.h"
 using namespace std;
 class EmergencyQueue
 {
@@ -18,12 +19,12 @@ class EmergencyQueue
         EmergencyNode(int pLevel): priorityLevel(pLevel){}
         EmergencyNode(string vId, char startP, char vendPoint, int pLevel):next(nullptr){
             vehicleId = vId;
-            startP = startPoint;
+            startPoint = startP;
             endPoint = vendPoint;
             priorityLevel = pLevel;
         }
     };
-    int calculatePriorityLevel(string Priority);
+    int calculatePriorityLevel(string Priority)const;
     EmergencyNode *EmergencyQueueList;
 public:
     EmergencyQueue();
@@ -31,9 +32,14 @@ public:
     void deletEmergencyQueue();
     ~EmergencyQueue();
     void removeFromEmergencyQueue();
-    void loadFromEmergencyCsv(std:: string );
-    EmergencyNode* getTop();
-    bool isEmergencyQueueEmpty();
+    void loadFromEmergencyCsv(string fileName);
+    EmergencyNode* getTop()const;
+    bool isEmergencyQueueEmpty()const;
+    void executeEmergencyVehicles(Graph* g);
+    void aStarAlgorithm(char start, char end, string vehicleId, Graph* g);
+    int getMaxInt()const; 
+    int heuristicFunction(char start, char end,int edgeWeight)const;
+    void insertAtEndInEmergencyQueue(string vId, char startP, char vendPoint, int plevel);
 };
 
 
