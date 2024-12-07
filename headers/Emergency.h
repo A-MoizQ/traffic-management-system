@@ -40,6 +40,7 @@ public:
     int getMaxInt()const; 
     int heuristicFunction(char start, char end,int edgeWeight)const;
     void insertAtEndInEmergencyQueue(string vId, char startP, char vendPoint, int plevel);
+    void displayAStarPath(char* parent, char start, char end, string vehicleId, int cost);
 };
 
 

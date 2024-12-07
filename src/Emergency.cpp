@@ -158,6 +158,32 @@ using namespace std;
         }
     }
 
+    void EmergencyQueue::displayAStarPath (char* parent, char start, char end, string vehicleId, int cost) 
+    {
+        char path[27];
+        int pathIdx = 0;
+        char current = end;
+
+        while (current != '\0') 
+        {
+            path[pathIdx++] = current;
+            current = parent[current - 'A'];//move to the parent of the current node
+        }
+    
+        if (path[pathIdx - 1] != start) // the last node must be present in the array then path will be valid
+        {
+            printw( "No path found for vehicle %s from %c to %c \n\n ", vehicleId.c_str() , start,end);
+            return;
+        }
+
+        printw("Vehicle %s  path: ",vehicleId.c_str());
+        for (int i = pathIdx - 1; i >= 0; i--) 
+        {
+            printw(" %c  ", path[i]);
+        }
+        printw("\nTotal travel time: %d minutes\n", cost);
+    }
+
     int EmergencyQueue::heuristicFunction(char start, char end,int weight)const
     {
         return abs(start - end) + weight;
@@ -194,7 +220,7 @@ using namespace std;
             int currentIdx = current - 'A';
             if (current == end)
             {
-                //call the function to display the path
+                this->displayAStarPath(aStarNode1.parent, start, end, vehicleId, aStarNode1.gCost[endIdx]);
                 return;
             }
             aStarNode1.closedList[currentIdx] = true;// the node is visited
