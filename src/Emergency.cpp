@@ -118,3 +118,14 @@ using namespace std;
         }
         fileHandler.close();
     }
+
+    EmergencyQueue:: EmergencyNode* EmergencyQueue:: getTop(){
+        if (EmergencyQueueList == nullptr)
+        {
+            return nullptr;
+        }
+        else{
+            return EmergencyQueueList;
+        }
+        
+    }
