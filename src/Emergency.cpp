@@ -1,4 +1,6 @@
 #include "../headers/Emergency.h"
+#include<iostream> 
+using namespace std;
     EmergencyQueue:: EmergencyQueue():EmergencyQueueList(nullptr){}
 
     
@@ -77,23 +79,42 @@
         string data;
         getline(fileHandler,data); //to skip the headers
         while(!fileHandler.eof()){
-
-            // to check if the vehicle id is present in the file
-            if(data.empty()) continue;
-            string vId = data;
-            
-            // to check if the vehicle start point is present in the file
-            if(data.empty()) continue;
-            char startPoint = data[0];
-
-            // to check if the vehicle end point is present in the file
-            if(data.empty()) continue;
-            char endPoint = data[0];
-            
-            // to check if the vehicle priority level is present in the file
-            if(data.empty()) continue;
-            string priorityLevel = data;
-            insertInEmergencyQueue(vId,startPoint,endPoint,priorityLevel);
+            getline(fileHandler,data);
+            if (data[0] == ',')
+            {
+                break;
+            }
+            else
+            {    // to check if the vehicle id is present in the file
+                int j = 0;
+                string vId = "",priorityLevel = "";
+                char startPoint = ' ', endPoint = ' ';
+                for (int i = 0; data[i] != '\0'; i++)
+                {
+                    if (data[i] == ',')
+                    {
+                        j++;
+                    }
+                    else{
+                        if (j == 0)
+                        {
+                            vId += data[i];   
+                        }
+                        else if (j == 1)
+                        {
+                            startPoint = data[i];
+                        }
+                        else if (j == 2)
+                        {
+                            endPoint = data[i];
+                        }
+                        else{
+                            priorityLevel += data[i];
+                        }
+                    }
+                }
+                insertInEmergencyQueue(vId,startPoint,endPoint,priorityLevel);
+            }
         }
         fileHandler.close();
     }
