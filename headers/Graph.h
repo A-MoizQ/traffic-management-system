@@ -24,6 +24,7 @@ public:
     Node* searchVertex(char name);
     Node* searchAdjacent(Node* adjList,char name);
     void clearGraph();
+    void vehicleRouting(char start, char end,int maxVert);
     ~Graph();
 
 };

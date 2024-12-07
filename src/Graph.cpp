@@ -1,4 +1,5 @@
 #include "../headers/Graph.h"
+#include "../headers/dijkstraMinHeap.h"
 
 Graph::Graph():list(nullptr){}
 
@@ -211,4 +212,95 @@ void Graph::setRoadClosures(std::string file){
         }
     }
     fileHandler.close();
+}
+
+void Graph::vehicleRouting(char start, char end, int maxVert){
+    MinHeap heap(maxVert);
+    int distances[maxVert];
+    char previous[maxVert];
+    bool visited[maxVert];
+
+    for (int i = 0; i < maxVert; ++i) {
+        distances[i] = heap.getMaxInt(); //initialize with max int value
+        previous[i] = '\0';     //intialize prev array with null characters
+        visited[i] = false;     //mark all vertices as unvisited
+    }
+
+    //initialize start distance with 0
+    distances[start-'A'] = 0;
+    //push it in min heap
+    heap.insert(0,start);
+    while(!heap.isEmpty()){
+        //extract min from the min heap
+        MinHeap::HeapQueueNode current = heap.extractMin();
+        //check if current vertex is visited or not
+        if(visited[current.vertex-'A']){
+            continue;
+        }
+        //if its not visited, put it in visited
+        visited[current.vertex-'A'] = true;
+        //if current is the end, we break the loop
+        if(current.vertex == end){
+            break;
+        }
+        //search if vertex exists in graph
+        Node* vertex = searchVertex(current.vertex);
+        if(!vertex){
+            continue;
+        }
+
+        Node* adj = vertex->adjacent;
+        //goes through adjacency list
+        while(adj){
+            if(visited[adj->name-'A']){
+                adj = adj->next;
+                continue;
+            }
+
+            /* HAVE TO ADD SIGNAL TIMING IN THIS ASWELL!!! */
+            //calculates new distance based on weights
+            int newDist = distances[current.vertex-'A'] + adj->weight;
+            //if the new calculated distance is smaller than original distance we update the distance and update the parent
+            if(newDist < distances[adj->name-'A']){
+                distances[adj->name-'A'] = newDist;
+                previous[adj->name-'A'] = current.vertex;
+                //insert it into the min heap
+                heap.insert(newDist,adj->name);
+            }
+
+            adj = adj->next;
+        }
+    }
+
+    char path[maxVert];
+    int index = 0;
+    //get the path from the previous array
+    for(char v = end; v != '\0'; v = previous[v-'A']){
+        path[index++] = v;
+        if(v == start){
+            break;
+        }
+    }
+
+    //if path is invalid
+    if (path[index - 1] != start) {
+        erase();
+        mvprintw(0, 0, "No path found from %c to %c", start, end);
+        refresh();
+        getch();
+        return;
+    }
+
+
+    erase();
+    mvprintw(0, 0, "Shortest path from %c to %c:", start, end);
+
+    for (int i = index - 1; i >= 0; --i) {
+        printw(" %c", path[i]);
+        if (i > 0) printw(" ->");
+    }
+
+    printw("\nTotal distance: %d", distances[end - 'A']);
+    refresh();
+    getch();
 }

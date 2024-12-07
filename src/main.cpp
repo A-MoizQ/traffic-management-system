@@ -95,7 +95,17 @@ int main(){
 
             }
             else if(choice == 7){
-
+                erase();
+                nodelay(stdscr,FALSE);
+                mvprintw(0,0,"Enter start point: ");
+                refresh();
+                char start = getch();
+                mvprintw(1,0,"Enter End Point: ");
+                refresh();
+                char end = getch();
+                g.vehicleRouting(start,end,27);
+                nodelay(stdscr,TRUE);
+                choice = -1;
             }
         }
 

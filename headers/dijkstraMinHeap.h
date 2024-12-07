@@ -6,7 +6,6 @@ class MinHeap{
     int right(int i);
     int parent(int i);
     void heapify(int i);
-    int getMaxInt() const;
 public:
     struct HeapQueueNode{
         int distance; //distance to the vertex
@@ -16,6 +15,7 @@ public:
     int capacity;
     int size;
     MinHeap(int cap);
+    int getMaxInt() const;
     ~MinHeap();
     void insert(int dist, char vert);
     HeapQueueNode extractMin();
