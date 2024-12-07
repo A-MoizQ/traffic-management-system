@@ -33,6 +33,7 @@ public:
     void removeFromEmergencyQueue();
     void loadFromEmergencyCsv(std:: string );
     EmergencyNode* getTop();
+    bool isEmergencyQueueEmpty();
 };
 
 

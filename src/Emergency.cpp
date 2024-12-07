@@ -129,3 +129,7 @@ using namespace std;
         }
         
     }
+
+    bool EmergencyQueue:: isEmergencyQueueEmpty(){
+        return EmergencyQueueList == nullptr;
+    }
