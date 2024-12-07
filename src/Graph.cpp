@@ -1,20 +1,21 @@
 #include "../headers/Graph.h"
+#include "../headers/dijkstraMinHeap.h"
 
 Graph::Graph():list(nullptr){}
 
 void Graph::clearGraph(){
-    Node* current = list;
+    GraphNode* current = list;
     while(current){
         //gets adjacent list to current node
-        Node* adjacent = current->adjacent;
+        GraphNode* adjacent = current->adjacent;
         //empties the adjacent list
         while(adjacent){
-            Node* temp = adjacent->next;
+            GraphNode* temp = adjacent->next;
             delete adjacent;
             adjacent = temp;
         }
         //deletes current node
-        Node* temp = current->next;
+        GraphNode* temp = current->next;
         delete current;
         current = temp;
     }
@@ -25,8 +26,8 @@ Graph::~Graph(){
     clearGraph();
 }
 
-Graph::Node* Graph::searchVertex(char name){
-    Node* current = list;
+GraphNode* Graph::searchVertex(char name){
+    GraphNode* current = list;
     //iterate through vertex list
     while(current){
         //if vertex is found return it
@@ -39,8 +40,8 @@ Graph::Node* Graph::searchVertex(char name){
     return nullptr;
 }
 
-Graph::Node* Graph::searchAdjacent(Node* adjList, char name){
-    Node* current = adjList;
+GraphNode* Graph::searchAdjacent(GraphNode* adjList, char name){
+    GraphNode* current = adjList;
     while(current){
         if(current->name == name){
             return current;
@@ -50,25 +51,25 @@ Graph::Node* Graph::searchAdjacent(Node* adjList, char name){
     return nullptr;
 }
 
-void Graph::setAdjacent(int weight, Node* vertex,char adjacent){
+void Graph::setAdjacent(int weight, GraphNode* vertex,char adjacent){
     if(!vertex){
         return;
     }
-    Node* adjList = vertex->adjacent;
+    GraphNode* adjList = vertex->adjacent;
     if(adjList == nullptr){
-        vertex->adjacent = new Node(weight,adjacent);
+        vertex->adjacent = new GraphNode(weight,adjacent);
         return;
     }
     //iterate through adjacent list and insert at end
     while(adjList->next){
         adjList = adjList->next;
     }
-    adjList->next = new Node(weight,adjacent);
+    adjList->next = new GraphNode(weight,adjacent);
     
 }
 
 void Graph::display() const{
-    Node* vertex = list;
+    GraphNode* vertex = list;
     int r = 3;
     mvprintw(0,0,"===== City Traffic Network =====");
     mvprintw(1,0,"Vertex -> Adjacent vertices");
@@ -76,7 +77,7 @@ void Graph::display() const{
         int c = 0;
         mvprintw(r,c,"%c -> ",vertex->name);
         c += 5;
-        Node* adjList = vertex->adjacent;
+        GraphNode* adjList = vertex->adjacent;
         while(adjList){
             mvprintw(r,c,"(%c, %d)",adjList->name,adjList->weight);
             c += 10;
@@ -90,11 +91,11 @@ void Graph::display() const{
 }
 
 void Graph::displayBlockedRoads() const{
-    Node* vertex = list;
+    GraphNode* vertex = list;
     int r = 2;
     mvprintw(0,0,"===== Blocked Roads =====");
     while(vertex){
-        Node* adjList = vertex->adjacent;
+        GraphNode* adjList = vertex->adjacent;
         while(adjList){
             if(adjList->weight == 1000){
                 mvprintw(r,0,"%c -> %c",vertex->name,adjList->name);
@@ -109,10 +110,10 @@ void Graph::displayBlockedRoads() const{
 }
 
 void Graph::setVertex(char name){
-    Node* current = list;
+    GraphNode* current = list;
     //if first vertex, simply insert
     if(current == nullptr){
-        list = new Node(0,name);
+        list = new GraphNode(0,name);
         return;
     }
     //else iterate through the vertex list
@@ -124,7 +125,7 @@ void Graph::setVertex(char name){
         current = current->next;
     }
     //insert at end of vertex list
-    current->next = new Node(0,name);
+    current->next = new GraphNode(0,name);
 }
 
 
@@ -144,7 +145,7 @@ void Graph::loadFromFile(std::string fileName){
         if(data.empty()) continue;
         char vertexName = data[0];
         //search if vertex exists
-        Node* vertex = searchVertex(vertexName);
+        GraphNode* vertex = searchVertex(vertexName);
         //get adjacent name
         getline(fileHandler,data,',');
         if(data.empty()) continue;
@@ -182,7 +183,7 @@ void Graph::setRoadClosures(std::string file){
         if(data.empty()) continue;
         char vertexName = data[0];
         //search if vertex exists
-        Node* vertex = searchVertex(vertexName);
+        GraphNode* vertex = searchVertex(vertexName);
         //get adjacent name
         getline(fileHandler,data,',');
         if(data.empty()) continue;
@@ -196,7 +197,7 @@ void Graph::setRoadClosures(std::string file){
         }
         if(vertex){
             //if vertex exists in graph, search of its desired adjacent vertex
-            Node* adjacent = searchAdjacent(vertex->adjacent,adjacentName);
+            GraphNode* adjacent = searchAdjacent(vertex->adjacent,adjacentName);
             //if adjacent vertex is found
             if(adjacent){
                 //if the road is under repair, put the weight of road to 500
@@ -211,4 +212,95 @@ void Graph::setRoadClosures(std::string file){
         }
     }
     fileHandler.close();
+}
+
+void Graph::vehicleRouting(char start, char end, int maxVert){
+    MinHeap heap(maxVert);
+    int distances[maxVert];
+    char previous[maxVert];
+    bool visited[maxVert];
+
+    for (int i = 0; i < maxVert; ++i) {
+        distances[i] = heap.getMaxInt(); //initialize with max int value
+        previous[i] = '\0';     //intialize prev array with null characters
+        visited[i] = false;     //mark all vertices as unvisited
+    }
+
+    //initialize start distance with 0
+    distances[start-'A'] = 0;
+    //push it in min heap
+    heap.insert(0,start);
+    while(!heap.isEmpty()){
+        //extract min from the min heap
+        MinHeap::HeapQueueNode current = heap.extractMin();
+        //check if current vertex is visited or not
+        if(visited[current.vertex-'A']){
+            continue;
+        }
+        //if its not visited, put it in visited
+        visited[current.vertex-'A'] = true;
+        //if current is the end, we break the loop
+        if(current.vertex == end){
+            break;
+        }
+        //search if vertex exists in graph
+        GraphNode* vertex = searchVertex(current.vertex);
+        if(!vertex){
+            continue;
+        }
+
+        GraphNode* adj = vertex->adjacent;
+        //goes through adjacency list
+        while(adj){
+            if(visited[adj->name-'A']){
+                adj = adj->next;
+                continue;
+            }
+
+            /* HAVE TO ADD SIGNAL TIMING IN THIS ASWELL!!! */
+            //calculates new distance based on weights
+            int newDist = distances[current.vertex-'A'] + adj->weight;
+            //if the new calculated distance is smaller than original distance we update the distance and update the parent
+            if(newDist < distances[adj->name-'A']){
+                distances[adj->name-'A'] = newDist;
+                previous[adj->name-'A'] = current.vertex;
+                //insert it into the min heap
+                heap.insert(newDist,adj->name);
+            }
+
+            adj = adj->next;
+        }
+    }
+
+    char path[maxVert];
+    int index = 0;
+    //get the path from the previous array
+    for(char v = end; v != '\0'; v = previous[v-'A']){
+        path[index++] = v;
+        if(v == start){
+            break;
+        }
+    }
+
+    //if path is invalid
+    if (path[index - 1] != start) {
+        erase();
+        mvprintw(0, 0, "No path found from %c to %c", start, end);
+        refresh();
+        getch();
+        return;
+    }
+
+
+    erase();
+    mvprintw(0, 0, "Shortest path from %c to %c:", start, end);
+
+    for (int i = index - 1; i >= 0; --i) {
+        printw(" %c", path[i]);
+        if (i > 0) printw(" ->");
+    }
+
+    printw("\nTotal distance: %d", distances[end - 'A']);
+    refresh();
+    getch();
 }
