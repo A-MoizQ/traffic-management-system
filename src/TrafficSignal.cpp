@@ -42,15 +42,14 @@ void TrafficSignal::Intersection::operator= (const Intersection &i) {
 }
 
 
-TrafficSignal::TrafficSignal(int conThreshold, int hashTSize) :
+TrafficSignal::TrafficSignal(const CongestionHashTable& _congestion, std::string trafficSignalFile) :
 
 
-    congestion(conThreshold, hashTSize),
-    hashTableSize(hashTSize),
-    congestionThreshold(conThreshold),
     intersectionArrSize(128) //to store ascii from 0 - 127
 
- {
+{
+
+    congestion = _congestion; //copy the congestionHashTable (hopefully it works without overloading)
 
     //this is a kind of hash map which will store the intersection info
     //at the index equal to the ascii of the name of the intersection
@@ -61,50 +60,16 @@ TrafficSignal::TrafficSignal(int conThreshold, int hashTSize) :
         intersections[i] = emptyIntersection; //this indicates that the index is empty
     }
 
+    readTrafficSignalFile(trafficSignalFile);
 
+}
 
+void TrafficSignal::readTrafficSignalFile(std::string filename) {
 
-    //add the starting data from the file to the congestion hash table
-    std::fstream fileHandler("road_network.csv", std::ios::in);
-    if(!fileHandler){
-        erase();
-        mvprintw(0,0,"road_network.csv not found!");
-        refresh();
-        return;
-    }
-    std::string data;
-    getline(fileHandler,data); //to skip the headers
-
-    while(!fileHandler.eof()){
-
-        //get intersection1 name
-        getline(fileHandler,data,',');
-        if(data.empty()) continue;
-        char intersection1Name = data[0];
-
-        //get intersection1 name
-        getline(fileHandler,data,',');
-        if(data.empty()) continue;
-        char intersection2Name = data[0];
-
-        //get number of vehicles
-        getline(fileHandler,data,'\n');
-        if(data.empty()) continue;
-        //convert to int
-        int numOfCars = stoi(data);
-
-        //add in the congestion table
-        congestion.insert(intersection1Name, intersection2Name, numOfCars);
-
-    }
-    fileHandler.close();
-
-
-    //now read the traffic signal data
-    std::fstream signalFileHandler("traffic_signals.csv", std::ios::in);
+    std::fstream signalFileHandler(filename, std::ios::in);
     if(!signalFileHandler){
         erase();
-        mvprintw(0,0,"traffic_signals.csv not found!");
+        mvprintw(0,0, (filename + " not found!").c_str() );
         refresh();
         return;
     }
@@ -133,7 +98,7 @@ TrafficSignal::TrafficSignal(int conThreshold, int hashTSize) :
         }
 
     }
-    signalFileHandler.close();
+    signalFileHandler.close();    
 
 }
 
@@ -166,7 +131,7 @@ void TrafficSignal::reduceCongestion(char name, int extraCars, bool turnGreenIns
 
     i.timeIncrement = extraCars * 2;
 
-    if(extraCars >= 2*congestionThreshold) //if the road is very congested then turn the signal green instanltly
+    if(extraCars >= 2*congestion.getConThreshold()) //if the road is very congested then turn the signal green instanltly
         turnGreenInstantly = true;
 
     if(turnGreenInstantly){
@@ -230,7 +195,7 @@ void TrafficSignal::updateCongestion(int numOfRoads) {
         //update the value in the congestion table
         congestion.updateRoad( road.intersection1, road.intersection2, numOfCars ); 
 
-        int extraCars = numOfCars - congestionThreshold;
+        int extraCars = numOfCars - congestion.getConThreshold();
         reduceCongestion(road.intersection2, extraCars);
         
     }
@@ -267,7 +232,7 @@ void TrafficSignal::displayTraffic(WINDOW *win, int &line) const {
     mvwprintw(win, line++, 1, "=== Roads Congestion Status ===");
 
     //indx indexes will start at the ASCII of A in this hash map
-    for (int indx = 'A'; indx < hashTableSize ; ) {
+    for (int indx = 'A'; indx < congestion.getSize() ; ) {
 
         //if the loop circles back to the starting index
         if(indx < 'A')

@@ -95,7 +95,7 @@ CongestionHashTable::~CongestionHashTable() {
 }
 
 //hash function
-int CongestionHashTable::hash(const IntersectionPair& pair) const {
+int CongestionHashTable::hash(std::string fileName, const IntersectionPair& pair) const {
 
     return ( pair.intersection1 + pair.intersection2 ) % arraySize ; //sum of ASCII values of the name of intersections kept between 0 and arraySize - 1
 
@@ -185,6 +185,18 @@ int CongestionHashTable::getNumOfCars (char intersection1, char intersection2) c
     }
 
     return -1; //if intersection pair was not found
+}
+
+int CongestionHashTable::getSize () const {
+
+    return arraySize;
+
+}
+
+int CongestionHashTable::getConThreshold() const {
+
+    return congestionThreshold;
+
 }
 
 void CongestionHashTable::displayRoadCongestion(WINDOW *win) const {

@@ -6,3 +6,4 @@ requirements.pdf
 #all object files in the directory and the subdirectories
 **/*.o
 token.txt
+main

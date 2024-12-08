@@ -40,7 +40,7 @@ class CongestionHashTable {
 
     public:
 
-    CongestionHashTable (int congestionThreshold = 20, int size = 101) ; // using a prime number to get less collisions
+    CongestionHashTable (std::string fileName, int congestionThreshold = 20, int size = 101) ; // using a prime number to get less collisions
 
     ~CongestionHashTable () ;
 
@@ -52,6 +52,10 @@ class CongestionHashTable {
 
     int getNumOfCars ( char intersection1 ,char intersection2 ) const ;
 
+    int getSize() const;
+
+    int getConThreshold() const;
+
     void displayRoadCongestion (WINDOW *win) const ;
 
     void updateRoad ( char intersection1, char intersection2, int carsOnRoad ) ;
@@ -59,6 +63,7 @@ class CongestionHashTable {
     IntersectionPair getIntersectionAtIndx( int indx ) const;
 
     IntersectionPair getInterLinearProbing( int indx ) const; //get the value using linear probing
+
 };
 
 #endif

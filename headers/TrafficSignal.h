@@ -3,6 +3,7 @@
 #include "CongestionHashTable.h"
 #include<fstream>
 #include<ncurses.h>
+#include<string>
 
 
 
@@ -28,8 +29,6 @@ class TrafficSignal{
 
     CongestionHashTable congestion;
 
-    int hashTableSize;
-    int congestionThreshold;
     int intersectionArrSize;
 
     Intersection *intersections;
@@ -38,9 +37,11 @@ class TrafficSignal{
 
     public:
 
-    TrafficSignal(int conThreshold = 5, int hashTSize = 727);
+    TrafficSignal(const CongestionHashTable& _congestion, std::string trafficSignalFile = "traffic_signals.csv");
 
     ~TrafficSignal();
+
+    void readTrafficSignalFile (std::string filename = "traffic_signals.csv" ) ;
 
     void reduceCongestion(char name, int extraCars, bool turnGreenInstantly = false);
 
