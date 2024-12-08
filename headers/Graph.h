@@ -3,7 +3,8 @@
 #include<string>
 #include<fstream>
 #include<ncurses.h>
-#include "TrafficSignal.h"
+
+class TrafficSignal;
 
 struct GraphNode{
     int weight;

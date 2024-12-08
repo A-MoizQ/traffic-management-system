@@ -1,12 +1,11 @@
 #ifndef TRAFFICSIGNAL_H
 #define TRAFFICSIGNAL_H
 #include "CongestionHashTable.h"
-#include "Graph.h"
 #include<fstream>
 #include<ncurses.h>
 #include<string>
 
-
+class Graph; 
 
 
 class TrafficSignal{

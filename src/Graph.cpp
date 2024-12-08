@@ -1,5 +1,6 @@
 #include "../headers/Graph.h"
 #include "../headers/dijkstraMinHeap.h"
+#include "../headers/TrafficSignal.h"
 
 Graph::Graph():list(nullptr){}
 

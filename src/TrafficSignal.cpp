@@ -1,5 +1,5 @@
 #include "../headers/TrafficSignal.h"
-
+#include "../headers/Graph.h"
 /*
 TODO:
 - return the intersection time back to normal if congestion is resolved
