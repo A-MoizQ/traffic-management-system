@@ -38,6 +38,7 @@ class CongestionHashTable {
     HashNode **table ; // Dynamic array of pointers to linked lists i.e each index will be a linked list
     int arraySize ;
     int congestionThreshold ; // A road is considered congested if num of cars on it are greater than this
+    int numOfRoads; //the number of roads set in the hashTable
 
     public:
 
@@ -63,9 +64,11 @@ class CongestionHashTable {
 
     void updateRoad ( char intersection1, char intersection2, int carsOnRoad ) ;
 
-    Road getIntersectionAtIndx( int indx ) const;
+    Road getRoadAtIndx( int indx ) const;
 
-    Road getInterLinearProbing( int indx ) const; //get the value using linear probing
+    Road getRoadLinearProbing( int indx ) const; //get the value using linear probing
+
+    int getNumOfRoads() const;
 
 };
 

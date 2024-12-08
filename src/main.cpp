@@ -81,11 +81,12 @@ int main(){
                 choice = -1; //reset choice to allow for non blocking input
             }
             else if(choice == 2){
+                int line = 0;
 
                 //clear screen
                 erase();
                 //display the graph
-                signals.displaySignals(win, r);
+                signals.displaySignals(win, line);
                 //disable non blocking input
                 nodelay(stdscr, FALSE); 
                 //wait for user to press a key

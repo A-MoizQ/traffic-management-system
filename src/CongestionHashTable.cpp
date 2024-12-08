@@ -53,7 +53,9 @@ void CongestionHashTable::HashNode::print (WINDOW *win, int& line ) const {
 
 CongestionHashTable::CongestionHashTable(int congestionThreshold, int size) :
 
-    arraySize(size)
+    arraySize(size),
+    congestionThreshold(congestionThreshold),
+    numOfRoads(0)
     
     {
 
@@ -79,7 +81,7 @@ CongestionHashTable::~CongestionHashTable() {
 
         HashNode* current = table[i];
 
-        while (current) {
+        while (current) { 
 
             HashNode* temp = current;
             current = current -> next;
@@ -95,6 +97,9 @@ CongestionHashTable::~CongestionHashTable() {
 }
 
 void CongestionHashTable::readFile(std::string fileName, WINDOW *win) {
+
+
+    srand(time(0));
 
     std::fstream fileHandler(fileName, std::ios::in);
     if(!fileHandler){
@@ -118,8 +123,10 @@ void CongestionHashTable::readFile(std::string fileName, WINDOW *win) {
         if(data.empty()) continue;
         char intersection2Name = data[0];
 
+
+        getline(fileHandler,data,'\n'); //skip the travel time
+
         //generate random number of vehicles on road
-        srand(time(0));
         int numOfCars = rand() % (congestionThreshold + rand() % congestionThreshold);
 
         //add in the congestion table
@@ -164,6 +171,7 @@ void CongestionHashTable::insert ( char intersection1, char intersection2, int c
     HashNode* newNode = new HashNode(key, carsOnRoad);
     newNode->next = table[index];
     table[index] = newNode;
+    numOfRoads++;
     
 }
 
@@ -188,6 +196,7 @@ bool CongestionHashTable::remove ( char intersection1, char intersection2 ) {
             }
 
             delete current;
+            numOfRoads--;
             return true;
 
         }
@@ -304,7 +313,7 @@ void CongestionHashTable::updateRoad ( char intersection1, char intersection2, i
     
 }
 
-Road CongestionHashTable::getIntersectionAtIndx( int indx ) const{
+Road CongestionHashTable::getRoadAtIndx( int indx ) const{
 
     //indx out of range
     if ( indx >= arraySize || indx < 0 ){
@@ -328,33 +337,29 @@ Road CongestionHashTable::getIntersectionAtIndx( int indx ) const{
 }
 
 
-Road CongestionHashTable::getInterLinearProbing( int indx ) const{
+Road CongestionHashTable::getRoadLinearProbing( int indx ) const{
 
-    Road road = getIntersectionAtIndx(indx);
-
-
-    //if the index was not nul then return the obtained road
-    if(road.intersection1 != 0 && road.intersection2!=0) {
-        return road;
-
+    if (indx >= arraySize || indx < 0) {
+        return Road(); // Return an empty road
     }
 
-    //if the index was empty then find the next valid index using linear probing
-    for( int i = indx + 1; ;i++ ){
+   // Start probing from the given index
+    for (int i = indx, steps = 0; steps < arraySize; i = (i + 1) % arraySize, steps++) {
+        Road road = getRoadAtIndx(i);
 
-        //if reached the end of the array then loop from the start
-        if( i>=arraySize )
-            i = 0;
-
-        //if we reach back to the original indx then the array is empty so return the empty road
-        if( i==indx )
+        // If a valid road is found, return it
+        if (road.intersection1 != 0 && road.intersection2 != 0) {
             return road;
-
-        Road p = getIntersectionAtIndx(i);
-
-        if( p.intersection1 != 0 && p.intersection2!=0 ) 
-            return p;
-
+        }
     }
+
+    // If no valid road was found after probing the entire table, return an empty road
+    return Road();
+
+}
+
+int CongestionHashTable::getNumOfRoads() const {
+
+    return numOfRoads;
 
 }

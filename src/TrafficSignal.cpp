@@ -15,6 +15,7 @@ TrafficSignal::Intersection::Intersection(char _name, int _totalTime) :
     timeIncrement(0)
 
     {
+
         if(totalTime<0)
             totalTime = 1;
 
@@ -42,14 +43,12 @@ void TrafficSignal::Intersection::operator= (const Intersection &i) {
 }
 
 
-TrafficSignal::TrafficSignal(const CongestionHashTable& _congestion) :
+TrafficSignal::TrafficSignal(CongestionHashTable& _congestion) :
 
-
+    congestion(_congestion),
     intersectionArrSize(128) //to store ascii from 0 - 127
 
 {
-
-    congestion = _congestion; //copy the congestionHashTable (hopefully it works without overloading)
 
     //this is a kind of hash map which will store the intersection info
     //at the index equal to the ascii of the name of the intersection
@@ -83,11 +82,11 @@ void TrafficSignal::readTrafficSignalFile(std::string filename, WINDOW *win) {
         
         //convert the name to ascii to do indexing in the array
         int intrASCII = static_cast<int>(intersectionName);
-
         //get green time
-        getline(signalFileHandler,data,',');
+        getline(signalFileHandler,data, '\n');
         if(data.empty()) continue;
-        int greenTime = static_cast<int>(data[0]);
+
+        int greenTime = std::stoi(data.substr(0,2));
 
         if( (intersections[intrASCII]).name == 0 ){ //if the index is empty
 
@@ -147,9 +146,7 @@ void TrafficSignal::updateTime(){
 
     for (int i = 0 ; i < intersectionArrSize ; i++) { //loop through all intersections
 
-        Intersection inter = intersections[i];
-
-        if( inter.name != 0 ){ //if the index is not empty
+        if( intersections[i].name != 0 ){ //if the index is not empty
 
             ((intersections[i]).timeCounter) -= 1; //reduce the elpased time
 
@@ -176,8 +173,11 @@ void TrafficSignal::updateCongestion(int numOfRoads) {
 
     for  ( int i = 0 ; i < numOfRoads ; i++ ) {
 
-        int randomIndx = getRandomValue(0, congestion.getSize());
-        Road road = congestion.getInterLinearProbing(randomIndx); //get a random road through linear probing
+        int randomIndx = getRandomValue(0, congestion.getSize()-1);
+        Road road = congestion.getRoadLinearProbing(randomIndx); //get a random road through linear probing
+
+        if(road.intersection1 == 0 || road.intersection2 == 0)
+            continue;
 
         bool add = getRandomValue(0,1); //randomly add or remove cars
         int numOfCars = congestion.getNumOfCars ( road.intersection1, road.intersection2 ) ;
@@ -205,34 +205,30 @@ void TrafficSignal::updateCongestion(int numOfRoads) {
 void TrafficSignal::displayTraffic(WINDOW *win, int &line) const {
 
     displaySignals(win, line, false); //dont refresh window
-    
-    bool isEmpty = true;
 
     //then print the number of cars on each road
     mvwprintw(win, line++, 1, "=== Roads Congestion Status ===");
 
-    //indx indexes will start at the ASCII of A in this hash map
-    for (int indx = 'A'; indx < congestion.getSize() ; ) {
+    //indexes will start at the ASCII of A in this hash map
+    for (int indx = 'A', roadsFound = 0; indx < congestion.getSize() ;) {
+
+        if( roadsFound >= congestion.getNumOfRoads() ) //if we have accessed all roads then break the loop
+            break;
 
         //if the loop circles back to the starting index
         if(indx < 'A')
             break; 
 
-        Road road = congestion.getInterLinearProbing(indx); //get a pair through linear probing
+        Road road = congestion.getRoadLinearProbing(indx); //get a pair through linear probing
         indx = congestion.hash(road) + 1; //get the index of the intersection we got through linear probing
 
-        if(road.intersection1 == 0 || road.intersection2) //empty intersection
+        if(road.intersection1 == 0 || road.intersection2 == 0) //empty intersection
             continue;
-        else
-            isEmpty = false;
 
+        roadsFound++;
 
         mvwprintw(win, line++, 1, ( "Road from " + std::to_string(road.intersection1) + " to " + std::to_string(road.intersection2) + " , Number of cars : " + std::to_string(congestion.getNumOfCars(road.intersection1, road.intersection2)) ).c_str());
         
-    }
-
-    if (isEmpty) {
-        mvwprintw(win, line++, 1, "No road congestion data found.");
     }
 
     wrefresh(win); // Refresh ncurses window
@@ -241,7 +237,6 @@ void TrafficSignal::displayTraffic(WINDOW *win, int &line) const {
 
 void TrafficSignal::displaySignals(WINDOW *win, int &line, bool refreshWindow) const {
 
-    bool isEmpty = true;
 
     mvwprintw(win, line++, 1, "=== Traffic Signal Status ===");
 
@@ -252,23 +247,18 @@ void TrafficSignal::displaySignals(WINDOW *win, int &line, bool refreshWindow) c
 
         if(i.name == 0) //empty index
             continue;
-        else
-            isEmpty = false;
+
+        std::string strName = "";
+        strName += i.name; 
 
         if ( i.isGreen )
-            mvwprintw(win,line++, 1, (i.name + " Status : Green , Time Till Red : " + std::to_string(i.timeCounter) + "s").c_str());
+            mvwprintw(win,line++, 1, ("Name: " + strName + " Status : Green , Time Till Red : " + std::to_string(i.timeCounter) + "s").c_str());
         else {
-            mvwprintw(win,line++, 1, (i.name + " Status : Red , Time Till Green : " + std::to_string(i.totalTime - i.timeCounter - i.timeIncrement)).c_str());
-            isEmpty = false;
+            mvwprintw(win,line++, 1, ("Name: " + strName + " Status : Red , Time Till Green : " + std::to_string(i.totalTime - i.timeCounter - i.timeIncrement) + "s").c_str());
         }
     }
 
-    if (isEmpty) {
-        mvwprintw(win, line++, 1, "No traffic signal data found.");
-    }
-
-    if(refreshWindow)
-        wrefresh(win); // Refresh ncurses window
+    wrefresh(win); // Refresh ncurses window
 
 }
 

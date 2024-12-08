@@ -27,7 +27,7 @@ class TrafficSignal{
 
     };
 
-    CongestionHashTable congestion;
+    CongestionHashTable& congestion;
 
     int intersectionArrSize;
 
@@ -37,7 +37,7 @@ class TrafficSignal{
 
     public:
 
-    TrafficSignal(const CongestionHashTable& _congestion);
+    TrafficSignal(CongestionHashTable& _congestion);
 
     ~TrafficSignal();
 
