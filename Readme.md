@@ -160,3 +160,46 @@ Efficiently calculates the shortest path using a Min Heap.
 
 ### Example Scenario:
 For a graph with vertices A, B, C, etc., and weighted edges, the algorithm calculates the shortest path while considering delays like traffic signals. The Min Heap ensures optimal performance.
+
+##Congestion Monitoring HashMap
+The Congestion Monitoring HashMap efficiently manages road congestion data using a hash table. It stores roads (identified by two intersections) and the number of vehicles traveling on them, allowing quick access and updates.
+
+###Key Features:
+ - Efficient Storage: Uses a hash table for fast lookups, insertions, and deletions.
+ - Congestion Tracking: Monitors roads’ congestion based on vehicle count.
+ - Real-time Updates: Allows updating congestion levels as traffic changes.
+###Key Methods:
+ - insert(char intersection1, char intersection2, int carsOnRoad): Adds a road with its vehicle count.
+ - remove(char intersection1, char intersection2): Removes a road.
+ - getNumOfCars(char intersection1, char intersection2): Retrieves the vehicle count on a road.
+ - updateRoad(char intersection1, char intersection2, int carsOnRoad): Updates the vehicle count.
+ - displayRoadCongestion(WINDOW *win): Displays congestion data.
+
+###Data Flow:
+ - **Input**: Reads traffic data (e.g., from CSV files).
+ - **Processing**: Updates congestion as traffic changes.
+ - **Output**: Displays real-time congestion status.
+
+
+##Traffic Signal Management System
+
+This system simulates traffic signal management based on congestion levels and traffic patterns. It dynamically adjusts signal timings to reduce congestion and manage traffic flow efficiently.
+The status of the signals is stored in an array which is used as a hashmap
+
+###Key Components:
+ - Intersection Class: Represents individual intersections with attributes such as name, green light status, and signal timing.
+ - TrafficSignal Class: Manages intersections, traffic signal timings, and congestion updates. It reads traffic signal data from files, adjusts signal timings based on congestion, and updates the status in real-time.
+ - Congestion Monitoring: Uses a CongestionHashTable to track the number of cars on each road. Congestion influences signal timings, with signals turning green instantly if congestion exceeds a threshold.
+
+###Key Methods:
+ - reduceCongestion(char name, int extraCars, bool turnGreenInstantly): Adjusts signal timing based on congestion.
+ - updateTime(Graph &g): Updates the traffic signal timings based on current congestion and road network.
+ - updateCongestion(int numOfRoads): Randomly adjusts vehicle counts on roads and updates congestion.
+ - displayTraffic(WINDOW *win, int &line, int col): Displays current road congestion status.
+ - displaySignals(WINDOW *win, int &line, int col, bool refreshWindow): Displays the current state of traffic signals.
+ - getRedTimeLeft(char intersectionName): Returns the remaining red light time for a given intersection.
+
+###Features:
+ - Dynamic Traffic Signals: Adjusts signal timings based on real-time congestion data.
+ - Congestion Reduction: Instantly turns signals green if congestion exceeds a threshold.
+ - Real-time Updates: Simulates changing traffic conditions and updates signal timings accordingly.
