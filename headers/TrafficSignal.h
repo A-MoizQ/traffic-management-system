@@ -50,6 +50,8 @@ class TrafficSignal{
 
     void displayTraffic(WINDOW *win, int &line) const; //line is the variable storing current line in the window
 
+    float getRedTimeLeft( char intersectionName ) const;
+
 };
 
 #endif
