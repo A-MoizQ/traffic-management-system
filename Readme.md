@@ -84,7 +84,7 @@ When executing emergency vehicle routing, a priority queue is implemented using 
 
 ### Key Points:
 - **Heuristic Function**: Estimates the cost to the goal and must be admissible.
-  ![Heuristic Function](images/heuristicFuntion.png)
+  ![Heuristic Function](images/heuristicFunction.png)
 - **Queue (openList)**: Ensures nodes with the lowest `fCost` are explored first.
 - **Early Goal Check**: Stops when the goal is reached, improving efficiency.
 - **Advantages**:
