@@ -202,12 +202,9 @@ void TrafficSignal::updateCongestion(int numOfRoads) {
 
 }
 
-void TrafficSignal::displayTraffic(WINDOW *win, int &line) const {
+void TrafficSignal::displayTraffic(WINDOW *win, int &line, int col) const {
 
-    displaySignals(win, line, false); //dont refresh window
-
-    //then print the number of cars on each road
-    mvwprintw(win, line++, 1, "=== Roads Congestion Status ===");
+    mvwprintw(win, line++, col, "=== Roads Congestion Status ===");
 
     //indexes will start at the ASCII of A in this hash map
     for (int indx = 'A', roadsFound = 0; indx < congestion.getSize() ;) {
@@ -227,7 +224,9 @@ void TrafficSignal::displayTraffic(WINDOW *win, int &line) const {
 
         roadsFound++;
 
-        mvwprintw(win, line++, 1, ( "Road from " + std::to_string(road.intersection1) + " to " + std::to_string(road.intersection2) + " , Number of cars : " + std::to_string(congestion.getNumOfCars(road.intersection1, road.intersection2)) ).c_str());
+
+
+        mvwprintw(win, line++, col, ( "Road from " + std::string(1,road.intersection1) + " to " + std::string(1,road.intersection2) + " , Number of cars : " + std::to_string(congestion.getNumOfCars(road.intersection1, road.intersection2)) ).c_str());
         
     }
 
@@ -235,10 +234,10 @@ void TrafficSignal::displayTraffic(WINDOW *win, int &line) const {
 
 }
 
-void TrafficSignal::displaySignals(WINDOW *win, int &line, bool refreshWindow) const {
+void TrafficSignal::displaySignals(WINDOW *win, int &line,int col, bool refreshWindow) const {
 
 
-    mvwprintw(win, line++, 1, "=== Traffic Signal Status ===");
+    mvwprintw(win, line++, col, "=== Traffic Signal Status ===");
 
     //supposing the intersection names are from A - Z
     for (char indx = 'A'; indx <= 'Z' ; indx++) {
@@ -252,9 +251,9 @@ void TrafficSignal::displaySignals(WINDOW *win, int &line, bool refreshWindow) c
         strName += i.name; 
 
         if ( i.isGreen )
-            mvwprintw(win,line++, 1, ("Name: " + strName + " Status : Green , Time Till Red : " + std::to_string(i.timeCounter) + "s").c_str());
+            mvwprintw(win,line++, col, ("Name: " + strName + " Status : Green , Time Till Red : " + std::to_string(i.timeCounter) + "s").c_str());
         else {
-            mvwprintw(win,line++, 1, ("Name: " + strName + " Status : Red , Time Till Green : " + std::to_string(i.totalTime - i.timeCounter - i.timeIncrement) + "s").c_str());
+            mvwprintw(win,line++, col, ("Name: " + strName + " Status : Red , Time Till Green : " + std::to_string(i.totalTime - i.timeCounter - i.timeIncrement) + "s").c_str());
         }
     }
 

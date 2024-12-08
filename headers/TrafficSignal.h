@@ -49,9 +49,9 @@ class TrafficSignal{
 
     void updateCongestion(int numOfRoads); //this will pick random roads and remove or add cars to it to simulate traffic flow
 
-    void displayTraffic(WINDOW *win, int &line) const; //line is the variable storing current line in the window
+    void displayTraffic(WINDOW *win, int &line, int col) const; //line is the variable storing current line in the window
 
-    void displaySignals(WINDOW *win, int &line, bool refreshWindow = true) const;
+    void displaySignals(WINDOW *win, int &line,int col, bool refreshWindow = true) const;
 
     float getRedTimeLeft( char intersectionName ) const;
 

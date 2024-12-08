@@ -7,6 +7,16 @@
 using namespace std;
 
 
+/*
+TODO:
+1. Time count down while red is wrong
+2. FIx traffic Display
+3. fix road display
+
+
+*/
+
+
 int main(){
 
     //ERRORS A RAHAY HAINNNNNNN😭😭😭😭😭
@@ -28,11 +38,6 @@ int main(){
     //pass the congestion threshold and size of the hash map
     CongestionHashTable congestion(5, 727);
     congestion.readFile("./data/road_network.csv", win); //pass the window pointer to display error message
-    /*
-    Issues:
-    -In vehicles.csv only the start and end intersections are given, we dont know which road the car will start on
-    so will have to figure out a way to do that
-    -one of the ways could be to pass the hashtable reference in the graph, and as the shortest path for each car is being calculated, we will get the first 2 intersections in that path and increment the numOfCars on the road by 1 */
 
     TrafficSignal signals(congestion);
     signals.readTrafficSignalFile("./data/traffic_signals.csv", win); //pass the window pointer to display error message
@@ -43,7 +48,8 @@ int main(){
         erase();
         mvprintw(r,c,"===== Simulation Dashboard =====");
 
-        signals.displayTraffic(win , r); //display the traffic signals status and road congestion
+        int line = 0;
+        signals.displaySignals(win, line, 100); //display signal status on the right side
         signals.updateCongestion(15); //update the congestion levels of 15 random roads
         signals.updateTime(); //update the time of all signals
         
@@ -64,6 +70,8 @@ int main(){
         r++;
         mvprintw(r,c,"[7]. Simulate Vehicle Routing");
         r++;
+
+        signals.displayTraffic(win , r, 0); //display the traffic signals status and road congestion on the bottom
         choice = getch() - '0';
         // choice = 5;
         if(choice != 0){
@@ -86,7 +94,7 @@ int main(){
                 //clear screen
                 erase();
                 //display the graph
-                signals.displaySignals(win, line);
+                signals.displaySignals(win, line, 0);
                 //disable non blocking input
                 nodelay(stdscr, FALSE); 
                 //wait for user to press a key
