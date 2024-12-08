@@ -3,13 +3,14 @@
 
 #include <iostream>
 #include<ncurses.h>
+#include<fstream>
 
 struct Road {
 
     char intersection1;
     char intersection2;
 
-    Road () ; //to create an empty intersection pair indicated by NUL
+    Road () ; //to create an empty intersection road indicated by NUL
 
     Road (char inter1, char inter2) ;
 
@@ -46,7 +47,7 @@ class CongestionHashTable {
 
     void readFile(std::string fileName, WINDOW *win);
 
-    int hash ( const Road& pair) const;
+    int hash ( const Road& road) const;
 
     void insert ( char intersection1, char intersection2 , int carsOnRoad ) ;
 

@@ -3,7 +3,7 @@
 
 Road::Road () :
 
-    //make an empty intersection pair
+    //make an empty intersection road
     intersection1(0),
     intersection2(0)
 
@@ -51,7 +51,7 @@ void CongestionHashTable::HashNode::print (WINDOW *win, int& line ) const {
 
 }
 
-CongestionHashTable::CongestionHashTable(std::string fileName, int congestionThreshold, int size) :
+CongestionHashTable::CongestionHashTable(int congestionThreshold, int size) :
 
     arraySize(size)
     
@@ -99,7 +99,7 @@ void CongestionHashTable::readFile(std::string fileName, WINDOW *win) {
     std::fstream fileHandler(fileName, std::ios::in);
     if(!fileHandler){
         erase();
-        mvprintw(win, 0,0, (fileName + " not found!").c_str() );
+        mvwprintw(win, 0,0, (fileName + " not found!").c_str() );
         refresh();
         return;
     }
@@ -131,9 +131,9 @@ void CongestionHashTable::readFile(std::string fileName, WINDOW *win) {
 
 
 //hash function
-int CongestionHashTable::hash(std::string fileName, const Road& pair) const {
+int CongestionHashTable::hash(const Road& road) const {
 
-    return ( pair.intersection1 + pair.intersection2 ) % arraySize ; //sum of ASCII values of the name of intersections kept between 0 and arraySize - 1
+    return ( road.intersection1 + road.intersection2 ) % arraySize ; //sum of ASCII values of the name of intersections kept between 0 and arraySize - 1
 
 }
 
@@ -220,7 +220,7 @@ int CongestionHashTable::getNumOfCars (char intersection1, char intersection2) c
 
     }
 
-    return -1; //if intersection pair was not found
+    return -1; //if intersection road was not found
 }
 
 int CongestionHashTable::getSize () const {
@@ -330,12 +330,12 @@ Road CongestionHashTable::getIntersectionAtIndx( int indx ) const{
 
 Road CongestionHashTable::getInterLinearProbing( int indx ) const{
 
-    Road pair = getIntersectionAtIndx(indx);
+    Road road = getIntersectionAtIndx(indx);
 
 
-    //if the index was not nul then return the obtained pair
-    if(pair.intersection1 != 0 && pair.intersection2!=0) {
-        return pair;
+    //if the index was not nul then return the obtained road
+    if(road.intersection1 != 0 && road.intersection2!=0) {
+        return road;
 
     }
 
@@ -346,9 +346,9 @@ Road CongestionHashTable::getInterLinearProbing( int indx ) const{
         if( i>=arraySize )
             i = 0;
 
-        //if we reach back to the original indx then the array is empty so return the empty pair
+        //if we reach back to the original indx then the array is empty so return the empty road
         if( i==indx )
-            return pair;
+            return road;
 
         Road p = getIntersectionAtIndx(i);
 

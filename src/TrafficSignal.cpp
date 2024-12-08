@@ -64,10 +64,11 @@ TrafficSignal::TrafficSignal(const CongestionHashTable& _congestion) :
 
 void TrafficSignal::readTrafficSignalFile(std::string filename, WINDOW *win) {
 
+    std::string data;
     std::fstream signalFileHandler(filename, std::ios::in);
     if(!signalFileHandler){
         erase();
-        mvprintw(win, 0,0, (filename + " not found!").c_str() );
+        mvwprintw(win, 0,0, (filename + " not found!").c_str() );
         refresh();
         return;
     }
@@ -170,12 +171,12 @@ void TrafficSignal::updateTime(){
 
 void TrafficSignal::updateCongestion(int numOfRoads) {
 
-    if(numOfRoads<=0 || numOfRoads>=hashTableSize) //input validation
+    if(numOfRoads<=0 || numOfRoads>=congestion.getSize()) //input validation
         return;
 
     for  ( int i = 0 ; i < numOfRoads ; i++ ) {
 
-        int randomIndx = getRandomValue(0, hashTableSize);
+        int randomIndx = getRandomValue(0, congestion.getSize());
         Road road = congestion.getInterLinearProbing(randomIndx); //get a random road through linear probing
 
         bool add = getRandomValue(0,1); //randomly add or remove cars
@@ -203,29 +204,9 @@ void TrafficSignal::updateCongestion(int numOfRoads) {
 
 void TrafficSignal::displayTraffic(WINDOW *win, int &line) const {
 
+    displaySignals(win, line, false); //dont refresh window
+    
     bool isEmpty = true;
-
-    //first rpint intersections status
-
-    mvwprintw(win, line++, 1, "=== Traffic Signal Status ===");
-
-    //supposing the intersection names are from A - Z
-    for (char indx = 'A'; indx <= 'Z' ; indx++) {
-
-        Intersection i = intersections[static_cast<int>(indx)];
-
-        if(i.name == 0) //empty index
-            continue;
-        else
-            isEmpty = false;
-
-        if ( i.isGreen )
-            mvwprintw(win,line++, 1, (i.name + " Status : Green , Time Till Red : " + std::to_string(i.timeCounter) + "s").c_str());
-        else {
-            mvwprintw(win,line++, 1, (i.name + " Status : Red , Time Till Green : " + std::to_string(i.totalTime - i.timeCounter - i.timeIncrement)).c_str());
-            isEmpty = false;
-        }
-    }
 
     //then print the number of cars on each road
     mvwprintw(win, line++, 1, "=== Roads Congestion Status ===");
@@ -251,10 +232,43 @@ void TrafficSignal::displayTraffic(WINDOW *win, int &line) const {
     }
 
     if (isEmpty) {
-        mvwprintw(win, line++, 1, "No road congestion and traffic signal data found.");
+        mvwprintw(win, line++, 1, "No road congestion data found.");
     }
 
     wrefresh(win); // Refresh ncurses window
+
+}
+
+void TrafficSignal::displaySignals(WINDOW *win, int &line, bool refreshWindow) const {
+
+    bool isEmpty = true;
+
+    mvwprintw(win, line++, 1, "=== Traffic Signal Status ===");
+
+    //supposing the intersection names are from A - Z
+    for (char indx = 'A'; indx <= 'Z' ; indx++) {
+
+        Intersection i = intersections[static_cast<int>(indx)];
+
+        if(i.name == 0) //empty index
+            continue;
+        else
+            isEmpty = false;
+
+        if ( i.isGreen )
+            mvwprintw(win,line++, 1, (i.name + " Status : Green , Time Till Red : " + std::to_string(i.timeCounter) + "s").c_str());
+        else {
+            mvwprintw(win,line++, 1, (i.name + " Status : Red , Time Till Green : " + std::to_string(i.totalTime - i.timeCounter - i.timeIncrement)).c_str());
+            isEmpty = false;
+        }
+    }
+
+    if (isEmpty) {
+        mvwprintw(win, line++, 1, "No traffic signal data found.");
+    }
+
+    if(refreshWindow)
+        wrefresh(win); // Refresh ncurses window
 
 }
 

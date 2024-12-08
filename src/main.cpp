@@ -8,6 +8,8 @@ using namespace std;
 
 
 int main(){
+
+    //ERRORS A RAHAY HAINNNNNNN😭😭😭😭😭
     WINDOW *win = initscr();
     noecho();               
     curs_set(0);            
@@ -40,6 +42,11 @@ int main(){
         //clears screen
         erase();
         mvprintw(r,c,"===== Simulation Dashboard =====");
+
+        signals.displayTraffic(win , r); //display the traffic signals status and road congestion
+        signals.updateCongestion(15); //update the congestion levels of 15 random roads
+        signals.updateTime(); //update the time of all signals
+        
         r++;
         mvprintw(r,c,"[0]. Exit");
         r++;
@@ -74,6 +81,18 @@ int main(){
                 choice = -1; //reset choice to allow for non blocking input
             }
             else if(choice == 2){
+
+                //clear screen
+                erase();
+                //display the graph
+                signals.displaySignals(win, r);
+                //disable non blocking input
+                nodelay(stdscr, FALSE); 
+                //wait for user to press a key
+                getch();
+                //re enable non blocking input
+                nodelay(stdscr, TRUE); 
+                choice = -1; //reset choice to allow for non blocking input
 
             }
             else if(choice == 3){
