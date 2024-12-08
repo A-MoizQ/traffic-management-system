@@ -2,7 +2,7 @@
 #include "../headers/Graph.h"
 #include "../headers/CongestionHashTable.h"
 #include "../headers/TrafficSignal.h"
-
+#include "../headers/Emergency.h"
 
 using namespace std;
 
