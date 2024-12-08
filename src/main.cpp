@@ -40,8 +40,8 @@ int main(){
 
         int line = 0;
         signals.displaySignals(win, line, 100); //display signal status on the right side
-        signals.updateCongestion(40); //update the congestion levels of 15 random roads
-        signals.updateTime(); //update the time of all signals
+        signals.updateCongestion(40); //update the congestion levels of 40 random roads
+        signals.updateTime(g); //update the time of all signals
         
         r++;
         mvprintw(r,c,"[0]. Exit");

@@ -143,7 +143,7 @@ void TrafficSignal::reduceCongestion(char name, int extraCars, bool turnGreenIns
 
 }
 
-void TrafficSignal::updateTime(){
+void TrafficSignal::updateTime(Graph &g){
 
     for (int i = 0 ; i < intersectionArrSize ; i++) { //loop through all intersections
 
@@ -159,6 +159,31 @@ void TrafficSignal::updateTime(){
             else if( intersections[i].timeCounter <= intersections[i].timeIncrement - intersections[i].totalTime  ){ 
                 intersections[i].isGreen = true;
                 intersections[i].timeCounter = intersections[i].totalTime + intersections[i].timeIncrement; //reset the time
+            }
+
+            //get the neighbours
+            std::string neighbours = g.getAdjacencyList(intersections[i].name); //get the neightbours
+
+            bool restoreTime = true;
+
+            //go through each road that intersection is connected to
+            for(char intersection : neighbours) {
+
+                //get num of cars between the intersections
+                int numOfCars = congestion.getNumOfCars(intersection, intersections[i]);
+
+                //if any of the roads is congested then dont restore time
+                if(numOfCars >= congestion.getConThreshold()){
+                    restoreTime = false;
+                    break;
+                }
+
+            }
+
+            if(restoreTime){
+
+                intersections[i].timeIncrement = 0; //restore to default value
+
             }
 
         }

@@ -1,6 +1,7 @@
 #ifndef TRAFFICSIGNAL_H
 #define TRAFFICSIGNAL_H
 #include "CongestionHashTable.h"
+#include "Graph.h"
 #include<fstream>
 #include<ncurses.h>
 #include<string>
@@ -45,7 +46,7 @@ class TrafficSignal{
 
     void reduceCongestion(char name, int extraCars, bool turnGreenInstantly = false);
 
-    void updateTime(); //update all the traffic lights time by 1 second
+    void updateTime(Graph& g); //update all the traffic lights time by 1 second
 
     void updateCongestion(int numOfRoads); //this will pick random roads and remove or add cars to it to simulate traffic flow
 
