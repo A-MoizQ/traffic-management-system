@@ -277,8 +277,6 @@ void CongestionHashTable::displayRoadCongestion(WINDOW *win) const {
         mvwprintw(win, line++, 1, "No road congestion data found.");
     }
 
-    wrefresh(win); // Refresh ncurses window
-
 }
 
 
@@ -305,11 +303,6 @@ void CongestionHashTable::updateRoad ( char intersection1, char intersection2, i
         current = current->next;
 
     }
-
-    //if key does not exist then, insert new node at the head of the list
-    HashNode* newNode = new HashNode(key, carsOnRoad);
-    newNode->next = table[index];
-    table[index] = newNode;
     
 }
 

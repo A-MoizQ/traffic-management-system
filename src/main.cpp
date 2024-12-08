@@ -9,11 +9,7 @@ using namespace std;
 
 /*
 TODO:
-1. Time count down while red is wrong
-2. FIx traffic Display
-3. fix road display
-
-
+2. Congestion levels tweaking out
 */
 
 
@@ -50,7 +46,7 @@ int main(){
 
         int line = 0;
         signals.displaySignals(win, line, 100); //display signal status on the right side
-        signals.updateCongestion(15); //update the congestion levels of 15 random roads
+        signals.updateCongestion(40); //update the congestion levels of 15 random roads
         signals.updateTime(); //update the time of all signals
         
         r++;

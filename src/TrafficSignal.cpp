@@ -2,8 +2,9 @@
 
 /*
 TODO:
-- Write a display function
 - return the intersection time back to normal if congestion is resolved
+-for this we will need to get name of neighbours of a node, return it in string form e.g if neighbours are A,B,C return "ABC"
+-then check the congestion levels on all roads the intersection connects to. if none are congested then return the time back to original
 */
 
 TrafficSignal::Intersection::Intersection(char _name, int _totalTime) : 
@@ -230,8 +231,6 @@ void TrafficSignal::displayTraffic(WINDOW *win, int &line, int col) const {
         
     }
 
-    wrefresh(win); // Refresh ncurses window
-
 }
 
 void TrafficSignal::displaySignals(WINDOW *win, int &line,int col, bool refreshWindow) const {
@@ -253,11 +252,9 @@ void TrafficSignal::displaySignals(WINDOW *win, int &line,int col, bool refreshW
         if ( i.isGreen )
             mvwprintw(win,line++, col, ("Name: " + strName + " Status : Green , Time Till Red : " + std::to_string(i.timeCounter) + "s").c_str());
         else {
-            mvwprintw(win,line++, col, ("Name: " + strName + " Status : Red , Time Till Green : " + std::to_string(i.totalTime - i.timeCounter - i.timeIncrement) + "s").c_str());
+            mvwprintw(win,line++, col, ("Name: " + strName + " Status : Red , Time Till Green : " + std::to_string(i.totalTime + i.timeCounter - i.timeIncrement) + "s").c_str());
         }
     }
-
-    wrefresh(win); // Refresh ncurses window
 
 }
 
