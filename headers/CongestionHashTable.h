@@ -4,17 +4,17 @@
 #include <iostream>
 #include<ncurses.h>
 
-struct IntersectionPair {
+struct Road {
 
     char intersection1;
     char intersection2;
 
-    IntersectionPair () ; //to create an empty intersection pair indicated by NUL
+    Road () ; //to create an empty intersection pair indicated by NUL
 
-    IntersectionPair (char inter1, char inter2) ;
+    Road (char inter1, char inter2) ;
 
-    bool operator==(const IntersectionPair& other) const ;
-    void operator=(const IntersectionPair& other) ;
+    bool operator==(const Road& other) const ;
+    void operator=(const Road& other) ;
 
 } ;
 
@@ -23,11 +23,11 @@ class CongestionHashTable {
 
     struct HashNode {
 
-        IntersectionPair key;
+        Road key;
         int carsOnRoad;
         HashNode *next;
 
-        HashNode (const IntersectionPair& k, int v);
+        HashNode (const Road& k, int v);
 
         void print(WINDOW *win, int &line) const;
 
@@ -40,11 +40,13 @@ class CongestionHashTable {
 
     public:
 
-    CongestionHashTable (std::string fileName, int congestionThreshold = 20, int size = 101) ; // using a prime number to get less collisions
+    CongestionHashTable ( int congestionThreshold = 20, int size = 101) ; // using a prime number to get less collisions
 
     ~CongestionHashTable () ;
 
-    int hash ( const IntersectionPair& pair) const;
+    void readFile(std::string fileName, WINDOW *win);
+
+    int hash ( const Road& pair) const;
 
     void insert ( char intersection1, char intersection2 , int carsOnRoad ) ;
 
@@ -60,9 +62,9 @@ class CongestionHashTable {
 
     void updateRoad ( char intersection1, char intersection2, int carsOnRoad ) ;
 
-    IntersectionPair getIntersectionAtIndx( int indx ) const;
+    Road getIntersectionAtIndx( int indx ) const;
 
-    IntersectionPair getInterLinearProbing( int indx ) const; //get the value using linear probing
+    Road getInterLinearProbing( int indx ) const; //get the value using linear probing
 
 };
 

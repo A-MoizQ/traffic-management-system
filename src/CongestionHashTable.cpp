@@ -1,7 +1,7 @@
 #include "../headers/CongestionHashTable.h"
 
 
-IntersectionPair::IntersectionPair () :
+Road::Road () :
 
     //make an empty intersection pair
     intersection1(0),
@@ -9,7 +9,7 @@ IntersectionPair::IntersectionPair () :
 
     {}
 
-IntersectionPair::IntersectionPair ( char inter1, char inter2 ) :
+Road::Road ( char inter1, char inter2 ) :
 
         intersection1(inter1),
         intersection2(inter2)
@@ -17,13 +17,13 @@ IntersectionPair::IntersectionPair ( char inter1, char inter2 ) :
         {}
 
 
-bool IntersectionPair::operator== ( const IntersectionPair& other ) const {
+bool Road::operator== ( const Road& other ) const {
 
     return intersection1 == other.intersection1 && intersection2 == other.intersection2;
 
 }
 
-void IntersectionPair::operator= (const IntersectionPair& other) {
+void Road::operator= (const Road& other) {
 
     intersection1 = other.intersection1;
     intersection2 = other.intersection2;
@@ -31,7 +31,7 @@ void IntersectionPair::operator= (const IntersectionPair& other) {
 }
 
 
-CongestionHashTable::HashNode::HashNode ( const IntersectionPair& k, int v ):
+CongestionHashTable::HashNode::HashNode ( const Road& k, int v ):
 
     key(k),
     carsOnRoad(v),
@@ -51,7 +51,7 @@ void CongestionHashTable::HashNode::print (WINDOW *win, int& line ) const {
 
 }
 
-CongestionHashTable::CongestionHashTable(int congestionThreshold, int size) :
+CongestionHashTable::CongestionHashTable(std::string fileName, int congestionThreshold, int size) :
 
     arraySize(size)
     
@@ -94,8 +94,44 @@ CongestionHashTable::~CongestionHashTable() {
 
 }
 
+void CongestionHashTable::readFile(std::string fileName, WINDOW *win) {
+
+    std::fstream fileHandler(fileName, std::ios::in);
+    if(!fileHandler){
+        erase();
+        mvprintw(win, 0,0, (fileName + " not found!").c_str() );
+        refresh();
+        return;
+    }
+
+    std::string data;
+    getline(fileHandler,data); //to skip the headers
+    while(!fileHandler.eof()){
+
+        //get intersection1 name
+        getline(fileHandler,data,',');
+        if(data.empty()) continue;
+        char intersection1Name = data[0];
+
+        //get intersection2 name
+        getline(fileHandler,data,',');
+        if(data.empty()) continue;
+        char intersection2Name = data[0];
+
+        //generate random number of vehicles on road
+        srand(time(0));
+        int numOfCars = rand() % (congestionThreshold + rand() % congestionThreshold);
+
+        //add in the congestion table
+        insert(intersection1Name, intersection2Name, numOfCars);
+    }
+    fileHandler.close();
+
+}
+
+
 //hash function
-int CongestionHashTable::hash(std::string fileName, const IntersectionPair& pair) const {
+int CongestionHashTable::hash(std::string fileName, const Road& pair) const {
 
     return ( pair.intersection1 + pair.intersection2 ) % arraySize ; //sum of ASCII values of the name of intersections kept between 0 and arraySize - 1
 
@@ -108,7 +144,7 @@ void CongestionHashTable::insert ( char intersection1, char intersection2, int c
         carsOnRoad = 0; // Prevent negative cars count
     }
 
-    IntersectionPair key(intersection1, intersection2);
+    Road key(intersection1, intersection2);
     int index = hash(key);
 
     HashNode* current = table[index];
@@ -134,7 +170,7 @@ void CongestionHashTable::insert ( char intersection1, char intersection2, int c
 
 bool CongestionHashTable::remove ( char intersection1, char intersection2 ) {
 
-    IntersectionPair key(intersection1, intersection2);
+    Road key(intersection1, intersection2);
     int index = hash(key);
 
     HashNode* current = table[index];
@@ -169,7 +205,7 @@ bool CongestionHashTable::remove ( char intersection1, char intersection2 ) {
 // Get the number of cars between two intersections
 int CongestionHashTable::getNumOfCars (char intersection1, char intersection2) const {
 
-    IntersectionPair key(intersection1, intersection2);
+    Road key(intersection1, intersection2);
     int index = hash(key);
 
     HashNode* current = table[index];
@@ -242,7 +278,7 @@ void CongestionHashTable::updateRoad ( char intersection1, char intersection2, i
     if ( carsOnRoad < 0 )
         carsOnRoad = 0;
 
-    IntersectionPair key(intersection1, intersection2);
+    Road key(intersection1, intersection2);
     int index = hash(key);
 
     HashNode* current = table[index];
@@ -268,33 +304,33 @@ void CongestionHashTable::updateRoad ( char intersection1, char intersection2, i
     
 }
 
-IntersectionPair CongestionHashTable::getIntersectionAtIndx( int indx ) const{
+Road CongestionHashTable::getIntersectionAtIndx( int indx ) const{
 
     //indx out of range
     if ( indx >= arraySize || indx < 0 ){
 
-        IntersectionPair emptyIntersectionPair;
-        return emptyIntersectionPair;
+        Road emptyRoad;
+        return emptyRoad;
 
     }
 
     //no intersections exist at the index
     if ( table[indx] == nullptr ) {
 
-        IntersectionPair emptyIntersectionPair;
-        return emptyIntersectionPair;
+        Road emptyRoad;
+        return emptyRoad;
 
     }
 
-    //get the node and return its key i.e intersectionPair
+    //get the node and return its key i.e Road
     return (table[indx])->key;
 
 }
 
 
-IntersectionPair CongestionHashTable::getInterLinearProbing( int indx ) const{
+Road CongestionHashTable::getInterLinearProbing( int indx ) const{
 
-    IntersectionPair pair = getIntersectionAtIndx(indx);
+    Road pair = getIntersectionAtIndx(indx);
 
 
     //if the index was not nul then return the obtained pair
@@ -314,7 +350,7 @@ IntersectionPair CongestionHashTable::getInterLinearProbing( int indx ) const{
         if( i==indx )
             return pair;
 
-        IntersectionPair p = getIntersectionAtIndx(i);
+        Road p = getIntersectionAtIndx(i);
 
         if( p.intersection1 != 0 && p.intersection2!=0 ) 
             return p;

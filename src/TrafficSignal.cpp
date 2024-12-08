@@ -42,7 +42,7 @@ void TrafficSignal::Intersection::operator= (const Intersection &i) {
 }
 
 
-TrafficSignal::TrafficSignal(const CongestionHashTable& _congestion, std::string trafficSignalFile) :
+TrafficSignal::TrafficSignal(const CongestionHashTable& _congestion) :
 
 
     intersectionArrSize(128) //to store ascii from 0 - 127
@@ -60,16 +60,14 @@ TrafficSignal::TrafficSignal(const CongestionHashTable& _congestion, std::string
         intersections[i] = emptyIntersection; //this indicates that the index is empty
     }
 
-    readTrafficSignalFile(trafficSignalFile);
-
 }
 
-void TrafficSignal::readTrafficSignalFile(std::string filename) {
+void TrafficSignal::readTrafficSignalFile(std::string filename, WINDOW *win) {
 
     std::fstream signalFileHandler(filename, std::ios::in);
     if(!signalFileHandler){
         erase();
-        mvprintw(0,0, (filename + " not found!").c_str() );
+        mvprintw(win, 0,0, (filename + " not found!").c_str() );
         refresh();
         return;
     }
@@ -110,6 +108,7 @@ TrafficSignal::~TrafficSignal(){
 
 int TrafficSignal::getRandomValue(int min, int max) const {
 
+    srand(time(0));
     return min + (rand() % (max - min + 1));
 
 }
@@ -177,7 +176,7 @@ void TrafficSignal::updateCongestion(int numOfRoads) {
     for  ( int i = 0 ; i < numOfRoads ; i++ ) {
 
         int randomIndx = getRandomValue(0, hashTableSize);
-        IntersectionPair road = congestion.getInterLinearProbing(randomIndx); //get a random road through linear probing
+        Road road = congestion.getInterLinearProbing(randomIndx); //get a random road through linear probing
 
         bool add = getRandomValue(0,1); //randomly add or remove cars
         int numOfCars = congestion.getNumOfCars ( road.intersection1, road.intersection2 ) ;
@@ -238,7 +237,7 @@ void TrafficSignal::displayTraffic(WINDOW *win, int &line) const {
         if(indx < 'A')
             break; 
 
-        IntersectionPair road = congestion.getInterLinearProbing(indx); //get a pair through linear probing
+        Road road = congestion.getInterLinearProbing(indx); //get a pair through linear probing
         indx = congestion.hash(road) + 1; //get the index of the intersection we got through linear probing
 
         if(road.intersection1 == 0 || road.intersection2) //empty intersection

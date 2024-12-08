@@ -37,11 +37,11 @@ class TrafficSignal{
 
     public:
 
-    TrafficSignal(const CongestionHashTable& _congestion, std::string trafficSignalFile = "traffic_signals.csv");
+    TrafficSignal(const CongestionHashTable& _congestion);
 
     ~TrafficSignal();
 
-    void readTrafficSignalFile (std::string filename = "traffic_signals.csv" ) ;
+    void readTrafficSignalFile (std::string filename , WINDOW *win ) ;
 
     void reduceCongestion(char name, int extraCars, bool turnGreenInstantly = false);
 

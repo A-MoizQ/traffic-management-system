@@ -25,14 +25,15 @@ int main(){
     //we will use 727 as the size of the hashtable bcz its a prime number and will have minimum collisions
     //pass the congestion threshold and size of the hash map
     CongestionHashTable congestion(5, 727);
+    congestion.readFile("./data/road_network.csv", win); //pass the window pointer to display error message
     /*
     Issues:
-    -Fix file reading for hashtable
     -In vehicles.csv only the start and end intersections are given, we dont know which road the car will start on
     so will have to figure out a way to do that
-    -one of the ways could be to pass the hashtable reference in the graph, and as the shortest path for each car is being calculated, we will get the first 2 intersections in that path and add it to the hashmap*/
+    -one of the ways could be to pass the hashtable reference in the graph, and as the shortest path for each car is being calculated, we will get the first 2 intersections in that path and increment the numOfCars on the road by 1 */
 
-    TrafficSignal signals(congestion, './data/traffic_signals.csv');
+    TrafficSignal signals(congestion);
+    signals.readTrafficSignalFile("./data/traffic_signals.csv", win); //pass the window pointer to display error message
 
     do{
         int r = 0; int c = 0;
