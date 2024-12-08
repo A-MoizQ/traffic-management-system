@@ -7,12 +7,6 @@
 using namespace std;
 
 
-/*
-TODO:
-2. Congestion levels tweaking out
-*/
-
-
 int main(){
 
     //ERRORS A RAHAY HAINNNNNNN😭😭😭😭😭
@@ -64,7 +58,9 @@ int main(){
         r++;
         mvprintw(r,c,"[6]. Block Road Due to Accident");
         r++;
-        mvprintw(r,c,"[7]. Simulate Vehicle Routing");
+        mvprintw(r,c,"[7]. Simulate Vehicle Routing Manually");
+        r++;
+        mvprintw(r,c,"[8]. Route Vehicles From File");
         r++;
 
         signals.displayTraffic(win , r, 0); //display the traffic signals status and road congestion on the bottom
@@ -141,7 +137,19 @@ int main(){
                 choice = -1; //reset choice to allow for non blocking input
             }
             else if(choice == 6){
-
+                erase();
+                nodelay(stdscr,FALSE);
+                mvprintw(0,0,"Enter start intersection: ");
+                echo();
+                refresh();
+                char start = getch();
+                mvprintw(1,0,"Enter end intersection: ");
+                refresh();
+                char end = getch();
+                noecho();
+                nodelay(stdscr,TRUE);
+                g.blockRoad(start,end);
+                choice = -1;
             }
             else if(choice == 7){
                 erase();
@@ -158,9 +166,15 @@ int main(){
                 nodelay(stdscr,TRUE);
                 choice = -1;
             }
+            else if(choice == 8){
+                nodelay(stdscr,FALSE);
+                g.vehicleRoutingUsingFile("./data/vehicles.csv",signals);
+                nodelay(stdscr,TRUE);
+                choice = -1;
+            }
         }
         refresh();
-        napms(150);
+        napms(1000);
 
     }while(choice != 0);
 

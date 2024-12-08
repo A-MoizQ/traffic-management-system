@@ -216,7 +216,7 @@ void Graph::setRoadClosures(std::string file){
 
 void Graph::vehicleRouting(char start, char end, int maxVert, TrafficSignal &signals){
     MinHeap heap(maxVert);
-    float distances[maxVert];
+    int distances[maxVert];
     char previous[maxVert];
     bool visited[maxVert];
 
@@ -257,9 +257,8 @@ void Graph::vehicleRouting(char start, char end, int maxVert, TrafficSignal &sig
                 continue;
             }
 
-            /* HAVE TO ADD SIGNAL TIMING IN THIS ASWELL!!! */
             //calculates new distance based on weights
-            float newDist = distances[current.vertex-'A'] + adj->weight + signals.getRedTimeLeft(current.vertex);
+            int newDist = distances[current.vertex-'A'] + adj->weight + signals.getRedTimeLeft(current.vertex);
             //if the new calculated distance is smaller than original distance we update the distance and update the parent
             if(newDist < distances[adj->name-'A']){
                 distances[adj->name-'A'] = newDist;
@@ -300,7 +299,70 @@ void Graph::vehicleRouting(char start, char end, int maxVert, TrafficSignal &sig
         if (i > 0) printw(" ->");
     }
 
-    printw("\nTotal distance: %f", distances[end - 'A']);
+    if (distances[end - 'A'] >= 100) {
+        //display as float
+        printw("\nTotal distance: %.2f minutes", distances[end - 'A'] / 100.0f);
+    } 
+    else {
+        //display as int
+        printw("\nTotal distance: %d minutes", distances[end - 'A']);
+    }
     refresh();
     getch();
+}
+
+void Graph::blockRoad(char st, char en){
+    GraphNode* intersection = searchAdjacent(searchVertex(st)->adjacent,en);
+    if(intersection){
+        intersection->weight = 1000;
+    }
+    else{
+        erase();
+        printw("No such intersection found!");
+        refresh();
+        napms(500);
+    }
+}
+
+std::string Graph::getAdjacencyList(GraphNode* adj){
+    GraphNode* current = adj;
+    std::string list = "";
+    while(current){
+        list += current->name;
+        current = current->next;
+    }
+    return list;
+}
+
+void Graph::vehicleRoutingUsingFile(std::string file, TrafficSignal& signals){
+    std::fstream fileHandler(file,std::ios::in);
+    if(!fileHandler){
+        erase();
+        mvprintw(0,0,"File not found!");
+        refresh();
+        return;
+    }
+    std::string data;
+    getline(fileHandler,data); //to skip the headers
+    while(!fileHandler.eof()){
+        //get vehicle name
+        getline(fileHandler,data,',');
+        if(data.empty()) continue;
+        char vehicleName = data[0];
+        //get start
+        getline(fileHandler,data,',');
+        if(data.empty()) continue;
+        char start = data[0];
+        //get end
+        getline(fileHandler,data,'\n');
+        if(data.empty()) continue;
+        //convert weight
+        char end = data[0];
+        erase();
+        vehicleRouting(start,end,27,signals);
+        refresh();
+    }
+
+    fileHandler.close();
+
 }
