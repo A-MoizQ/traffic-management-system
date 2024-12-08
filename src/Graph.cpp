@@ -325,8 +325,9 @@ void Graph::blockRoad(char st, char en){
     }
 }
 
-std::string Graph::getAdjacencyList(GraphNode* adj){
-    GraphNode* current = adj;
+std::string Graph::getAdjacencyList(char adj){
+
+    GraphNode* current = searchVertex(adj);
     std::string list = "";
     while(current){
         list += current->name;

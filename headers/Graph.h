@@ -27,7 +27,7 @@ public:
     GraphNode* searchVertex(char name);
     GraphNode* searchAdjacent(GraphNode* adjList,char name);
     void blockRoad(char st, char en);
-    std::string getAdjacencyList(GraphNode* adj);
+    std::string getAdjacencyList(char adj);
     void clearGraph();
     void vehicleRouting(char start, char end,int maxVert, TrafficSignal &signals);
     void vehicleRoutingUsingFile(std::string file, TrafficSignal &signals);

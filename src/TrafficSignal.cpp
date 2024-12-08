@@ -170,7 +170,7 @@ void TrafficSignal::updateTime(Graph &g){
             for(char intersection : neighbours) {
 
                 //get num of cars between the intersections
-                int numOfCars = congestion.getNumOfCars(intersection, intersections[i]);
+                int numOfCars = congestion.getNumOfCars(intersection, intersections[i].name);
 
                 //if any of the roads is congested then dont restore time
                 if(numOfCars >= congestion.getConThreshold()){
