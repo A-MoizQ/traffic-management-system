@@ -1,8 +1,11 @@
 #include<ncurses.h>
 #include "../headers/Graph.h"
 #include "../headers/CongestionHashTable.h"
-#include "../headers/Emergency.h"
+#include "../headers/TrafficSignal.h"
+
+
 using namespace std;
+
 
 int main(){
     WINDOW *win = initscr();
@@ -22,6 +25,8 @@ int main(){
     //we will use 727 as the size of the hashtable bcz its a prime number and will have minimum collisions
     //pass the congestion threshold and size of the hash map
     CongestionHashTable congestion(5, 727);
+
+    TrafficSignal signals;
 
     do{
         int r = 0; int c = 0;
@@ -118,7 +123,7 @@ int main(){
                 refresh();
                 char end = getch();
                 noecho();
-                g.vehicleRouting(start,end,27);
+                g.vehicleRouting(start,end,27, signals);
                 nodelay(stdscr,TRUE);
                 choice = -1;
             }

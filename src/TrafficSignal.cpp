@@ -293,3 +293,24 @@ void TrafficSignal::displayTraffic(WINDOW *win, int &line) const {
     wrefresh(win); // Refresh ncurses window
 
 }
+
+float TrafficSignal::getRedTimeLeft( char intersectionName ) const {
+
+    int indx = static_cast<int> (intersectionName);
+
+    Intersection i = intersections[indx];
+
+    if (i.name == 0)
+        return -1; //intersection does not exist
+
+    if(i.isGreen) //if the signal is green that means red time left is zero
+        return 0.00f;
+
+    int timeInSecs = i.timeCounter; 
+    float timeInMins = 0.00f;
+
+    timeInMins = timeInSecs%100;
+
+    return timeInMins;
+
+}

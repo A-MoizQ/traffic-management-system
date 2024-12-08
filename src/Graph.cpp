@@ -214,9 +214,9 @@ void Graph::setRoadClosures(std::string file){
     fileHandler.close();
 }
 
-void Graph::vehicleRouting(char start, char end, int maxVert){
+void Graph::vehicleRouting(char start, char end, int maxVert, TrafficSignal &signals){
     MinHeap heap(maxVert);
-    int distances[maxVert];
+    float distances[maxVert];
     char previous[maxVert];
     bool visited[maxVert];
 
@@ -259,7 +259,7 @@ void Graph::vehicleRouting(char start, char end, int maxVert){
 
             /* HAVE TO ADD SIGNAL TIMING IN THIS ASWELL!!! */
             //calculates new distance based on weights
-            int newDist = distances[current.vertex-'A'] + adj->weight;
+            float newDist = distances[current.vertex-'A'] + adj->weight + signals.getRedTimeLeft(current.vertex);
             //if the new calculated distance is smaller than original distance we update the distance and update the parent
             if(newDist < distances[adj->name-'A']){
                 distances[adj->name-'A'] = newDist;
@@ -300,7 +300,7 @@ void Graph::vehicleRouting(char start, char end, int maxVert){
         if (i > 0) printw(" ->");
     }
 
-    printw("\nTotal distance: %d", distances[end - 'A']);
+    printw("\nTotal distance: %f", distances[end - 'A']);
     refresh();
     getch();
 }

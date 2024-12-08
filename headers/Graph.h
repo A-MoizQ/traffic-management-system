@@ -3,6 +3,7 @@
 #include<string>
 #include<fstream>
 #include<ncurses.h>
+#include "TrafficSignal.h"
 
 struct GraphNode{
     int weight;
@@ -25,7 +26,7 @@ public:
     GraphNode* searchVertex(char name);
     GraphNode* searchAdjacent(GraphNode* adjList,char name);
     void clearGraph();
-    void vehicleRouting(char start, char end,int maxVert);
+    void vehicleRouting(char start, char end,int maxVert, TrafficSignal &signals);
     ~Graph();
 
 };
