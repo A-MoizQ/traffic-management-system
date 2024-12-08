@@ -273,7 +273,7 @@ float TrafficSignal::getRedTimeLeft( char intersectionName ) const {
     int timeInSecs = i.timeCounter; 
     float timeInMins = 0.00f;
 
-    timeInMins = timeInSecs%100;
+    timeInMins = (-1*timeInSecs)%100;
 
     return timeInMins;
 
